@@ -61,6 +61,7 @@ export default {
 }
 
 @import '~bulma';
+@import '~bulma/sass/utilities/variables';
 
 @import '~wysiwyg.css/wysiwyg.sass';
 
@@ -69,6 +70,19 @@ $fa-font-path: '~font-awesome/fonts/';
 
 html {
   background-color: whitesmoke;
+}
+
+.center-icon {
+  display: block;
+  text-align: center;
+}
+
+.has-text-danger {
+  color: $red;
+}
+
+.has-text-success {
+  color: $green;
 }
 
 .nprogress-container {
