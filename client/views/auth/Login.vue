@@ -36,10 +36,6 @@
 </template>
 
 <script>
-  import {
-    mapActions
-  } from 'vuex'
-
   export default {
 
     data () {
@@ -61,11 +57,9 @@
       // Can set query parameter here for auth redirect or just do it silently in login redirect.
     },
     methods: {
-      ...mapActions([
-        'setUsername'
-      ]),
       login () {
         var redirect = this.$auth.redirect()
+
         this.$auth.login({
           headers: {
             'Content-Type': 'application/json'
@@ -73,9 +67,10 @@
           data: this.data.body,
           rememberMe: this.data.rememberMe,
           redirect: {name: redirect ? redirect.from.name : 'Home'},
+          fetchUser: true,
           success (res) {
+            this.$auth.fetch()
             console.log('Auth Success')
-            this.setUsername(res.data.username)
           },
           error (err) {
             if (err.response) {

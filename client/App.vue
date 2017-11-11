@@ -22,6 +22,10 @@ export default {
     NprogressContainer
   },
 
+  mounted () {
+    this.$auth.fetch()
+  },
+
   beforeMount () {
     const { body } = document
     const WIDTH = 768

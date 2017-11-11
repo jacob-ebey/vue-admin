@@ -31,10 +31,6 @@ const format = (string, ...params) => {
   return s
 }
 
-export const setUsername = ({ commit }, username) => {
-  commit(types.SET_USERNAME, username)
-}
-
 // TODO: Add option to handle error globally
 export const doLoad = ({ commit, state }, { http, whatToLoad, params, mutator, forceLoad = false }) => {
   if (http && whatToLoad) {
