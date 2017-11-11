@@ -19,7 +19,7 @@
         </div>
         <div class="nav-right is-flex">
           <router-link v-if="!$auth.check()" to="/login" class="nav-item">Login</router-link>
-          <a v-if="$auth.check()" @click="logout" class="nav-item">{{username}} | Logout</a>
+          <a v-if="$auth.check()" @click="logout" class="nav-item"><span v-if="username">{{username}} |</span> Logout</a>
         </div>
       </nav>
     </div>
