@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="table-buttons">
-      <router-link to="gateways/add" tag="button" class="button is-success has-text-centered">
+      <button @click="openAddGateway" class="button is-success has-text-centered">
         <span class="icon is-small">
           <i class="fa fa-plus center-icon"></i>
         </span>
         <span>
           Add Gateway
         </span>
-      </router-link>
+      </button>
     </div>
     <table class="table is-striped">
       <thead>
@@ -33,21 +33,38 @@
         </router-link>
       </tbody>
     </table>
+    <card-modal :visible="showAddGateway" @close="closeAddGateway" @ok="closeAddGateway" @cancel="closeAddGateway" title="New Gateway">
+      <div class="field">
+        <label class="label">Name</label>
+        <div class="control">
+          <input v-model="name" class="input" type="text" placeholder="Gateway 01">
+        </div>
+      </div>
+    </card-modal>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import { CardModal } from 'vue-bulma-modal'
 import Tooltip from 'vue-bulma-tooltip'
 
 export default {
   components: {
+    CardModal,
     Tooltip
   },
 
   computed: mapGetters({
     loading: 'loading'
   }),
+
+  data () {
+    return {
+      showAddGateway: false,
+      name: ''
+    }
+  },
 
   mounted () {
     this.loadGateways(false)
@@ -59,6 +76,13 @@ export default {
     ]),
     loadGateways (forceLoad = true) {
       this.doLoad({ http: this.$http, whatToLoad: 'gateways', forceLoad })
+    },
+    openAddGateway () {
+      this.showAddGateway = true
+    },
+    closeAddGateway () {
+      this.showAddGateway = false
+      this.name = ''
     }
   }
 }

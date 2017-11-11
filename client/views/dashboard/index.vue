@@ -3,7 +3,7 @@
     <div class="tile is-ancestor">
       <div class="tile is-parent">
         <article class="tile is-child box">
-          <h4 class="title">Projects</h4>
+          <router-link tag="h4" to="projects" class="title">Projects</router-link>
           <table class="table is-striped">
             <thead>
               <tr>
@@ -19,8 +19,8 @@
                 <th>ID</th>
               </tr>
             </thead>
-            <tbody v-if="projects">
-              <router-link v-for="project in projects" :key="project.id" :to="'projects/view/' + project.id" tag="tr"> 
+            <tbody v-if="loading.projects.data">
+              <router-link v-for="project in loading.projects.data.slice(0, 5)" :key="project.id" :to="'projects/view/' + project.id" tag="tr"> 
                 <td><i class="fa fa-check has-text-success"></i></td>
                 <td>{{project.title}}</td>
                 <td>{{project.id}}</td>
@@ -42,7 +42,7 @@
 
       <div class="tile is-parent">
         <article class="tile is-child box">
-          <h4 class="title">Gateways</h4>
+          <router-link tag="h4" to="gateways" class="title">Gateways</router-link>
           <table class="table is-striped">
             <thead>
               <tr>
@@ -58,8 +58,8 @@
                 <th>ID</th>
               </tr>
             </thead>
-            <tbody v-if="gateways">
-              <router-link v-for="gateway in gateways" :key="gateway.id" :to="'gateways/view/' + gateway.id" tag="tr"> 
+            <tbody v-if="loading.gateways.data">
+              <router-link v-for="gateway in loading.gateways.data.slice(5, 10)" :key="gateway.id" :to="'gateways/view/' + gateway.id" tag="tr"> 
                 <td><i class="fa fa-check has-text-success"></i></td>
                 <td>{{gateway.title}}</td>
                 <td>{{gateway.id}}</td>
@@ -94,13 +94,7 @@ export default {
   computed: {
     ...mapGetters({
       loading: 'loading'
-    }),
-    projects () {
-      return this.loading.projects.data ? this.loading.projects.data.slice(0, 5) : undefined
-    },
-    gateways () {
-      return this.loading.gateways.data ? this.loading.gateways.data.slice(0, 5) : undefined
-    }
+    })
   },
 
   mounted () {

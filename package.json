@@ -1,8 +1,8 @@
 {
   "name": "vue-admin",
-  "version": "0.1.12",
-  "description": "Vue Admin Panel Framework",
-  "repository": "vue-bulma/vue-admin",
+  "version": "0.0.1",
+  "description": "The frontend for the device platform",
+  "repository": "jacob-ebey/vue-admin",
   "homepage": "https://admin.vuebulma.com",
   "license": "MIT",
   "author": {

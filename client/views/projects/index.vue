@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="table-buttons">
-        <router-link to="projects/add" tag="button" class="button is-success has-text-centered">
+        <button @click="openAddProject" class="button is-success has-text-centered">
           <span class="icon is-small">
             <i class="fa fa-plus center-icon"></i>
           </span>
           <span>
             Add Project
           </span>
-        </router-link>
+        </button>
     </div>
     <table class="table is-striped">
       <thead>
@@ -33,21 +33,38 @@
         </router-link>
       </tbody>
     </table>
+    <card-modal :visible="showAddProject" @close="closeAddProject" @ok="closeAddProject" @cancel="closeAddProject" title="New Project">
+      <div class="field">
+        <label class="label">Name</label>
+        <div class="control">
+          <input v-model="name" class="input" type="text" placeholder="Project 01">
+        </div>
+      </div>
+    </card-modal>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import { CardModal } from 'vue-bulma-modal'
 import Tooltip from 'vue-bulma-tooltip'
 
 export default {
   components: {
+    CardModal,
     Tooltip
   },
 
   computed: mapGetters({
     loading: 'loading'
   }),
+
+  data () {
+    return {
+      showAddProject: false,
+      name: ''
+    }
+  },
 
   mounted () {
     this.loadProjects(false)
@@ -59,6 +76,13 @@ export default {
     ]),
     loadProjects (forceLoad = true) {
       this.doLoad({ http: this.$http, whatToLoad: 'projects', forceLoad })
+    },
+    openAddProject () {
+      this.showAddProject = true
+    },
+    closeAddProject () {
+      this.showAddProject = false
+      this.name = ''
     }
   }
 }

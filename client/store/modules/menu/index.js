@@ -2,7 +2,7 @@ import * as types from '../../mutation-types'
 import lazyLoading from './lazyLoading'
 // import charts from './charts'
 // import uifeatures from './uifeatures'
-// import components from './components'
+import components from './components'
 // import tables from './tables'
 
 // show: meta.label -> name
@@ -37,7 +37,7 @@ const state = {
         link: 'gateways/index.vue'
       },
       component: lazyLoading('gateways', true)
-    }
+    },
     // {
     //   name: 'Axios',
     //   path: '/axiosDemo',
@@ -50,7 +50,7 @@ const state = {
     // },
     // charts,
     // uifeatures,
-    // components,
+    components
     // tables
   ]
 }
