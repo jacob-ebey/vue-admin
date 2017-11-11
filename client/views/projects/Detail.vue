@@ -67,7 +67,7 @@
           </table>
           <tooltip label="See all gateways" placement="right">
             <button to="gateways" tag="button" class="button has-text-centered">
-                <i class="fa fa-ellipsis-h center-icon"></i>
+                <i class="fa fa-chevron-down center-icon"></i>
               </button>
           </tooltip>
         </article>
@@ -93,7 +93,7 @@
           </table>
           <tooltip label="See all logs" placement="right">
             <button class="button has-text-centered">
-                <i class="fa fa-ellipsis-h center-icon"></i>
+                <i class="fa fa-chevron-down center-icon"></i>
               </button>
           </tooltip>
         </article>
