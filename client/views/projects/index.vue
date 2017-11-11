@@ -26,14 +26,15 @@
         </tr>
       </thead>
       <tbody v-if="loading.projects.data">
-        <router-link v-for="project in loading.projects.data" :key="project.id" :to="'projects/view/' + project.id" tag="tr"> 
+        <router-link tag="tr" v-for="project in loading.projects.data" :key="project._id" :to="'projects/view/' + project._id"> 
           <td><i class="fa fa-check has-text-success"></i></td>
-          <td>{{project.title}}</td>
-          <td>{{project.id}}</td>
+          <td>{{project.name}}</td>
+          <td>{{project._id}}</td>
         </router-link>
       </tbody>
     </table>
-    <card-modal :visible="showAddProject" @close="closeAddProject" @ok="closeAddProject" @cancel="closeAddProject" title="New Project">
+    <card-modal :visible="showAddProject" @close="closeAddProject" @ok="addProject" @cancel="closeAddProject" title="New Project">
+      <div v-show="addError" style="color:red; word-wrap:break-word;">{{ addError }}</div>
       <div class="field">
         <label class="label">Name</label>
         <div class="control">
@@ -62,6 +63,7 @@ export default {
   data () {
     return {
       showAddProject: false,
+      addError: null,
       name: ''
     }
   },
@@ -78,7 +80,8 @@ export default {
 
   methods: {
     ...mapActions([
-      'doLoad'
+      'doLoad',
+      'doPush'
     ]),
     loadProjects (forceLoad = true) {
       this.doLoad({ http: this.$http, whatToLoad: 'projects', forceLoad })
@@ -89,6 +92,21 @@ export default {
     closeAddProject () {
       this.showAddProject = false
       this.name = ''
+    },
+    addProject () {
+      const project = {
+        name: this.name
+      }
+
+      const token = this.$auth.token()
+
+      this.$http.post('/api/projects', project, { emulateJSON: true, headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' } }).then((res) => {
+        if (res.status === 200) {
+          this.showAddProject = false
+          this.name = ''
+          this.doPush({ whatToLoad: 'projects', item: res.data })
+        }
+      })
     }
   }
 }

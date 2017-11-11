@@ -7,7 +7,6 @@ const createLoadObject = () => ({
 })
 
 const state = {
-  username: null,
   loading: {
     projects: createLoadObject(),
     project: createLoadObject(),
@@ -62,8 +61,8 @@ const mutations = {
     state.loading[whatToLoad].error = error
   },
 
-  [types.SET_USERNAME] (state, username) {
-    state.username = username
+  [types.DO_PUSH] (state, { whatToLoad, item }) {
+    state.loading[whatToLoad].data.push(item)
   }
 }
 

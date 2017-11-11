@@ -11,3 +11,5 @@ export const SET_LOADING = 'SET_LOADING'
 export const SET_LOADING_DATA = 'SET_LOADING_DATA'
 
 export const SET_LOADING_ERROR = 'SET_LOADING_ERROR'
+
+export const DO_PUSH = 'DO_PUSH'

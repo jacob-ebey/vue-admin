@@ -7,16 +7,20 @@
           <table class="table">
             <tbody>
               <tr>
+                <th>Name</th>
+                <td>{{loading.project.data.name}}</td>
+              </tr>
+              <tr>
+                <th>Created At</th>
+                <td>{{loading.project.data.createdAt|formatDateAndTime}}</td>
+              </tr>
+              <tr>
                 <th>ID</th>
-                <td>{{loading.project.data.id}}</td>
+                <td>{{loading.project.data._id}}</td>
               </tr>
               <tr>
-                <th>Title</th>
-                <td>{{loading.project.data.title}}</td>
-              </tr>
-              <tr>
-                <th>Body</th>
-                <td>{{loading.project.data.body}}</td>
+                <th>Owner</th>
+                <td>{{loading.project.data.ownedBy.username}}</td>
               </tr>
             </tbody>
           </table>

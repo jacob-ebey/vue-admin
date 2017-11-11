@@ -39,7 +39,7 @@ export const doLoad = ({ commit, state }, { http, whatToLoad, params, mutator, f
     }
 
     commit(types.SET_LOADING, { whatToLoad, isLoading: true })
-    commit(types.SET_LOADING_DATA, { whatToLoad, data: undefined })
+    commit(types.SET_LOADING_DATA, { whatToLoad, data: null })
 
     http({
       url: format(endpoints[whatToLoad], ...(params || [])),
@@ -52,13 +52,16 @@ export const doLoad = ({ commit, state }, { http, whatToLoad, params, mutator, f
       }]
     }).then((response) => {
       commit(types.SET_LOADING_DATA, { whatToLoad, data: response.data })
-      commit(types.SET_LOADING_ERROR, { whatToLoad, error: undefined })
+      commit(types.SET_LOADING_ERROR, { whatToLoad, error: null })
     }).catch((error) => {
-      this.grows = undefined
-      console.log(error)
+      commit(types.SET_LOADING_DATA, { whatToLoad, data: null })
       commit(types.SET_LOADING_ERROR, { whatToLoad, error })
     }).then(() => {
       commit(types.SET_LOADING, { whatToLoad, isLoading: false })
     })
   }
+}
+
+export const doPush = ({ commit }, { whatToLoad, item }) => {
+  commit(types.DO_PUSH, { whatToLoad, item })
 }

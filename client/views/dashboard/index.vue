@@ -20,10 +20,10 @@
               </tr>
             </thead>
             <tbody v-if="loading.projects.data">
-              <router-link v-for="project in loading.projects.data.slice(0, 5)" :key="project.id" :to="'projects/view/' + project.id" tag="tr"> 
+              <router-link tag="tr" v-for="project in loading.projects.data.slice(0, 5)" :key="project._id" :to="'projects/view/' + project._id"> 
                 <td><i class="fa fa-check has-text-success"></i></td>
-                <td>{{project.title}}</td>
-                <td>{{project.id}}</td>
+                <td>{{project.name}}</td>
+                <td>{{project._id}}</td>
               </router-link>
             </tbody>
           </table>
