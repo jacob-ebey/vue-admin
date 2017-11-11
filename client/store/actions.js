@@ -1,4 +1,5 @@
 import * as types from './mutation-types'
+import endpoints from './endpoints'
 
 export const toggleSidebar = ({ commit }, config) => {
   if (config instanceof Object) {
@@ -19,12 +20,6 @@ export const switchEffect = ({ commit }, effectItem) => {
   if (effectItem) {
     commit(types.SWITCH_EFFECT, effectItem)
   }
-}
-
-const loadMap = {
-  projects: 'https://jsonplaceholder.typicode.com/posts',
-  project: 'https://jsonplaceholder.typicode.com/posts/{0}',
-  gateways: 'https://jsonplaceholder.typicode.com/posts'
 }
 
 const format = (string, ...params) => {
@@ -51,7 +46,7 @@ export const doLoad = ({ commit, state }, { http, whatToLoad, params, mutator, f
     commit(types.SET_LOADING_DATA, { whatToLoad, data: undefined })
 
     http({
-      url: format(loadMap[whatToLoad], ...(params || [])),
+      url: format(endpoints[whatToLoad], ...(params || [])),
       transformResponse: [(data) => {
         let parsed = JSON.parse(data)
         if (mutator) {
