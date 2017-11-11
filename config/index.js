@@ -25,8 +25,8 @@ module.exports = {
     assetsSubDirectory: 'assets',
     assetsPublicPath: '/',
     proxyTable: {
-      '/MODApis': {
-        target: 'http://dev.markitondemand.com',
+      '/api': {
+        target: 'http://localhost:4040/api',
         changeOrigin: true
       }
     },

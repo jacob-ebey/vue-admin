@@ -19,12 +19,12 @@ Vue.use(VueAuth, {
     },
     response: function (res) {
       // Get Token from response body
-      return res.data
+      return res.data.token
     }
   },
   http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
   router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
-  loginData: { url: 'http://localhost:6789/login', fetchUser: false },
+  loginData: { url: 'http://localhost:4040/api/auth/login', fetchUser: false },
   refreshData: { enabled: false }
 })
 

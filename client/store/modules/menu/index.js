@@ -16,7 +16,8 @@ const state = {
       path: '/dashboard',
       meta: {
         icon: 'fa-tachometer',
-        link: 'dashboard/index.vue'
+        link: 'dashboard/index.vue',
+        auth: true
       },
       component: lazyLoading('dashboard', true)
     },
@@ -25,7 +26,8 @@ const state = {
       path: '/projects',
       meta: {
         icon: 'fa-leaf',
-        link: 'projects/index.vue'
+        link: 'projects/index.vue',
+        auth: true
       },
       component: lazyLoading('projects', true)
     },
@@ -34,7 +36,8 @@ const state = {
       path: '/gateways',
       meta: {
         icon: 'fa-sitemap',
-        link: 'gateways/index.vue'
+        link: 'gateways/index.vue',
+        auth: true
       },
       component: lazyLoading('gateways', true)
     }
