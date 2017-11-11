@@ -1,6 +1,17 @@
 import * as types from '../mutation-types'
 
+const createLoadObject = () => ({
+  isLoading: false,
+  data: undefined,
+  error: undefined
+})
+
 const state = {
+  loading: {
+    projects: createLoadObject(),
+    project: createLoadObject(),
+    gateways: createLoadObject()
+  },
   device: {
     isMobile: false,
     isTablet: false
@@ -36,6 +47,18 @@ const mutations = {
     for (let name in effectItem) {
       state.effect[name] = effectItem[name]
     }
+  },
+
+  [types.SET_LOADING] (state, { whatToLoad, isLoading }) {
+    state.loading[whatToLoad].isLoading = isLoading
+  },
+
+  [types.SET_LOADING_DATA] (state, { whatToLoad, data }) {
+    state.loading[whatToLoad].data = data
+  },
+
+  [types.SET_LOADING_ERROR] (state, { whatToLoad, error }) {
+    state.loading[whatToLoad].error = error
   }
 }
 

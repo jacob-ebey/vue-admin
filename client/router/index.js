@@ -20,6 +20,11 @@ export default new Router({
     },
     ...generateRoutesFromMenu(menuModule.state.items),
     {
+      name: 'Project detail',
+      path: '/projects/view/:id',
+      component: require('../views/projects/Detail')
+    },
+    {
       path: '*',
       redirect: '/'
     }

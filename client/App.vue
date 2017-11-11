@@ -85,6 +85,10 @@ html {
   color: $green;
 }
 
+.table-buttons {
+  padding-bottom: 10px;
+}
+
 .nprogress-container {
   position: fixed !important;
   width: 100%;
