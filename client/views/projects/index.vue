@@ -67,6 +67,12 @@ export default {
   },
 
   mounted () {
+    switch (this.$route.query.action) {
+      case 'add':
+        this.showAddProject = true
+        break
+    }
+
     this.loadProjects(false)
   },
 

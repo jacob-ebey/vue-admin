@@ -67,6 +67,12 @@ export default {
   },
 
   mounted () {
+    switch (this.$route.query.action) {
+      case 'add':
+        this.showAddGateway = true
+        break
+    }
+
     this.loadGateways(false)
   },
 

@@ -28,7 +28,7 @@
             </tbody>
           </table>
           <tooltip v-if="!loading.projects.isLoading" label="Add new project" placement="bottom-right">
-            <router-link to="projects/add" tag="button" class="button is-success has-text-centered">
+            <router-link to="projects?action=add" tag="button" class="button is-success has-text-centered">
               <i class="fa fa-plus center-icon"></i>
             </router-link>
           </tooltip>
@@ -67,7 +67,7 @@
             </tbody>
           </table>
           <tooltip v-if="!loading.gateways.isLoading" label="Add new gateway" placement="bottom-right">
-            <router-link to="gateways/add" tag="button" class="button is-success has-text-centered">
+            <router-link to="gateways?action=add" tag="button" class="button is-success has-text-centered">
               <i class="fa fa-plus center-icon"></i>
             </router-link>
           </tooltip>
