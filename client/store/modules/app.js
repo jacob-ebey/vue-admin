@@ -11,7 +11,10 @@ const state = {
     projects: createLoadObject(),
     project: createLoadObject(),
     createProject: createLoadObject(),
-    gateways: createLoadObject()
+
+    gateways: createLoadObject(),
+    gateway: createLoadObject(),
+    createGateway: createLoadObject()
   },
   device: {
     isMobile: false,

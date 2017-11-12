@@ -25,6 +25,11 @@ export default new Router({
       component: require('../views/projects/Detail')
     },
     {
+      name: 'Gateway detail',
+      path: '/gateways/view/:id',
+      component: require('../views/gateways/Detail')
+    },
+    {
       path: '*',
       redirect: '/'
     }

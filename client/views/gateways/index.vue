@@ -14,8 +14,8 @@
       <thead>
         <tr>
           <th>
-            <button v-if="loading.gateways.isLoading" class="button is-white is-loading"></button>
-            <tooltip v-if="!loading.gateways.isLoading" label="Reload gateways" placement="top-right">
+            <button v-if="gateways.isLoading" class="button is-white is-loading"></button>
+            <tooltip v-if="!gateways.isLoading" label="Reload gateways" placement="top-right">
               <button class="button is-small has-text-centered" v-on:click="loadGateways">
                 <i class="fa fa-refresh center-icon"></i>
               </button>
@@ -25,19 +25,20 @@
           <th>ID</th>
         </tr>
       </thead>
-      <tbody v-if="loading.gateways.data">
-        <router-link v-for="gateway in loading.gateways.data" :key="gateway.id" :to="'gateways/view/' + gateway.id" tag="tr"> 
+      <tbody v-if="gateways.data">
+        <router-link tag="tr" v-for="gateway in gateways.data" :key="gateway._id" :to="'gateways/view/' + gateway._id"> 
           <td><i class="fa fa-check has-text-success"></i></td>
-          <td>{{gateway.title}}</td>
-          <td>{{gateway.id}}</td>
+          <td>{{gateway.name}}</td>
+          <td>{{gateway._id}}</td>
         </router-link>
       </tbody>
     </table>
-    <card-modal :visible="showAddGateway" @close="closeAddGateway" @ok="closeAddGateway" @cancel="closeAddGateway" title="New Gateway">
+    <card-modal :visible="showAddGateway" @close="closeAddGateway" @ok="addGateway" @cancel="closeAddGateway" title="New Gateway">
+      <div v-show="createGateway.error" style="color:red; word-wrap:break-word;">{{ createGateway.error }}</div>
       <div class="field">
         <label class="label">Name</label>
         <div class="control">
-          <input v-model="name" class="input" type="text" placeholder="Gateway 01">
+          <input v-model="name" class="input" type="text" placeholder="name">
         </div>
       </div>
     </card-modal>
@@ -56,7 +57,8 @@ export default {
   },
 
   computed: mapGetters({
-    loading: 'loading'
+    gateways: 'gateways',
+    createGateway: 'createGateway'
   }),
 
   data () {
@@ -78,7 +80,9 @@ export default {
 
   methods: {
     ...mapActions([
-      'doLoad'
+      'doLoad',
+      'doPost',
+      'doPush'
     ]),
     loadGateways (forceLoad = true) {
       this.doLoad({ http: this.$http, whatToLoad: 'gateways', forceLoad })
@@ -89,6 +93,21 @@ export default {
     closeAddGateway () {
       this.showAddGateway = false
       this.name = ''
+    },
+    addGateway () {
+      const gateway = {
+        name: this.name
+      }
+
+      this.doPost({
+        http: this.$http,
+        whatToPost: 'createGateway',
+        body: gateway,
+        callback: (item) => {
+          this.doPush({ whereToPush: 'gateways', item })
+          this.closeAddGateway()
+        }
+      })
     }
   }
 }
