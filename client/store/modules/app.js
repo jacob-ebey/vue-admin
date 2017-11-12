@@ -2,14 +2,15 @@ import * as types from '../mutation-types'
 
 const createLoadObject = () => ({
   isLoading: false,
-  data: undefined,
-  error: undefined
+  data: null,
+  error: null
 })
 
 const state = {
   loading: {
     projects: createLoadObject(),
     project: createLoadObject(),
+    createProject: createLoadObject(),
     gateways: createLoadObject()
   },
   device: {

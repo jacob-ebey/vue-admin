@@ -62,6 +62,35 @@ export const doLoad = ({ commit, state }, { http, whatToLoad, params, mutator, f
   }
 }
 
-export const doPush = ({ commit }, { whatToLoad, item }) => {
-  commit(types.DO_PUSH, { whatToLoad, item })
+export const doPost = ({ commit, state }, { http, whatToPost, params, body, mutator, callback }) => {
+  if (http && whatToPost) {
+    commit(types.SET_LOADING, { whatToLoad: whatToPost, isLoading: true })
+    commit(types.SET_LOADING_DATA, { whatToLoad: whatToPost, data: null })
+
+    http.post(format(endpoints[whatToPost], ...(params || [])), body, {
+      emulateJSON: true,
+      transformResponse: [(data) => {
+        let parsed = JSON.parse(data)
+        if (mutator) {
+          parsed = mutator(parsed)
+        }
+        return parsed
+      }]
+    }).then((response) => {
+      commit(types.SET_LOADING_DATA, { whatToLoad: whatToPost, data: response.data })
+      commit(types.SET_LOADING_ERROR, { whatToLoad: whatToPost, error: null })
+      if (callback) {
+        callback(response.data)
+      }
+    }).catch((error) => {
+      commit(types.SET_LOADING_DATA, { whatToLoad: whatToPost, data: null })
+      commit(types.SET_LOADING_ERROR, { whatToLoad: whatToPost, error: error.response.data.message })
+    }).then(() => {
+      commit(types.SET_LOADING, { whatToLoad: whatToPost, isLoading: false })
+    })
+  }
+}
+
+export const doPush = ({ commit }, { whereToPush, item }) => {
+  commit(types.DO_PUSH, { whatToLoad: whereToPush, item })
 }

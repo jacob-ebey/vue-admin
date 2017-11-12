@@ -34,11 +34,11 @@
       </tbody>
     </table>
     <card-modal :visible="showAddProject" @close="closeAddProject" @ok="addProject" @cancel="closeAddProject" title="New Project">
-      <div v-show="addError" style="color:red; word-wrap:break-word;">{{ addError }}</div>
+      <div v-show="createProject.error" style="color:red; word-wrap:break-word;">{{ createProject.error }}</div>
       <div class="field">
         <label class="label">Name</label>
         <div class="control">
-          <input v-model="name" class="input" type="text" placeholder="Project 01">
+          <input v-model="name" class="input" type="text" placeholder="name">
         </div>
       </div>
     </card-modal>
@@ -57,7 +57,8 @@ export default {
   },
 
   computed: mapGetters({
-    loading: 'loading'
+    loading: 'loading',
+    createProject: 'createProject'
   }),
 
   data () {
@@ -81,6 +82,7 @@ export default {
   methods: {
     ...mapActions([
       'doLoad',
+      'doPost',
       'doPush'
     ]),
     loadProjects (forceLoad = true) {
@@ -98,13 +100,13 @@ export default {
         name: this.name
       }
 
-      const token = this.$auth.token()
-
-      this.$http.post('/api/projects', project, { emulateJSON: true, headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' } }).then((res) => {
-        if (res.status === 200) {
-          this.showAddProject = false
-          this.name = ''
-          this.doPush({ whatToLoad: 'projects', item: res.data })
+      this.doPost({
+        http: this.$http,
+        whatToPost: 'createProject',
+        body: project,
+        callback: (item) => {
+          this.doPush({ whereToPush: 'projects', item })
+          this.closeAddProject()
         }
       })
     }

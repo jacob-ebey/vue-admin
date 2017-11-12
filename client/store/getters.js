@@ -5,6 +5,7 @@ const sidebar = state => state.app.sidebar
 const effect = state => state.app.effect
 const menuitems = state => state.menu.items
 const loading = state => state.app.loading
+const createProject = state => state.app.loading.createProject
 const componententry = state => {
   return state.menu.items.filter(c => c.meta && c.meta.label === 'Components')[0]
 }
@@ -17,5 +18,6 @@ export {
   effect,
   menuitems,
   loading,
+  createProject,
   componententry
 }
