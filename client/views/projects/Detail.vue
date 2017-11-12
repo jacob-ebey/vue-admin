@@ -54,21 +54,22 @@
                 <th>Name</th>
                 <th>Iot ID</th>
                 <th>Registration Code</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody v-if="project.data.gateways">
-              <tr v-for="gateway in project.data.gateways" :key="gateway._id">
+              <tr v-for="(gateway, index) in project.data.gateways" :key="gateway._id">
                 <td>{{gateway.name}}</td>
                 <td>{{gateway.iotId}}</td>
                 <td>{{gateway.registrationCode}}</td>
+                <td>
+                  <button class="button is-danger is-small has-text-centered" @click="openDeleteGateway(gateway, index)">
+                    <i class="fa fa-trash-o center-icon"></i>
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
-          <tooltip label="See all gateways" placement="right">
-            <button to="gateways" tag="button" class="button has-text-centered">
-                <i class="fa fa-chevron-down center-icon"></i>
-              </button>
-          </tooltip>
         </article>
       </div>
       <div class="tile is-parent">
@@ -111,6 +112,10 @@
         </div>
       </div>
     </card-modal>
+
+    <card-modal :visible="showDeleteGateway && !!gatewayToDelete && indexToDelete !== null" @close="closeDeleteGateway" @ok="deleteGateway(gatewayToDelete, indexToDelete)" @cancel="closeDeleteGateway" okText="Yes" cancelText="No" title="Remove Gateway">
+      <p>Do you really wish to remove {{gatewayToDelete && gatewayToDelete.name}} from the project?</p>
+    </card-modal>
   </div>
 </template>
 
@@ -140,6 +145,10 @@
         showAddGateway: false,
         selectedGateway: '',
 
+        showDeleteGateway: false,
+        gatewayToDelete: null,
+        indexToDelete: null,
+
         eventData: {
           labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
           series: [
@@ -161,7 +170,9 @@
       ...mapActions([
         'doLoad',
         'doPost',
-        'doPush'
+        'doDelete',
+        'doPush',
+        'doSplice'
       ]),
       loadProject () {
         this.doLoad({
@@ -187,6 +198,16 @@
         this.showAddGateway = false
         this.selectedGateway = ''
       },
+      openDeleteGateway (gateway, index) {
+        this.showDeleteGateway = true
+        this.gatewayToDelete = gateway
+        this.indexToDelete = index
+      },
+      closeDeleteGateway () {
+        this.showDeleteGateway = false
+        this.gatewayToDelete = null
+        this.indexToDelete = null
+      },
       addGatewayToProject () {
         this.doPost({
           http: this.$http,
@@ -200,6 +221,19 @@
             this.closeAddGateway()
           }
         })
+      },
+      deleteGateway (gateway, index) {
+        if (gateway) {
+          this.doDelete({
+            http: this.$http,
+            whatToPost: 'removeGatewayFromProject',
+            params: [this.$route.params.id, gateway._id],
+            callback: () => {
+              this.doSplice({ whereToSplice: 'project', subPath: 'gateways', start: index, deleteCount: 1 })
+              this.closeDeleteGateway()
+            }
+          })
+        }
       }
     }
   }

@@ -11,6 +11,7 @@ const project = state => state.app.loading.project
 const createProject = state => state.app.loading.createProject
 const deleteProject = state => state.app.loading.deleteProject
 const addGatewayToProject = state => state.app.loading.addGatewayToProject
+const removeGatewayFromProject = state => state.app.loading.removeGatewayFromProject
 
 const gateways = state => state.app.loading.gateways
 const gateway = state => state.app.loading.gateway
@@ -35,6 +36,7 @@ export {
   createProject,
   deleteProject,
   addGatewayToProject,
+  removeGatewayFromProject,
 
   gateways,
   gateway,

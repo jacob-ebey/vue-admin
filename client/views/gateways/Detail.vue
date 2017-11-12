@@ -19,6 +19,10 @@
                 <td>{{gateway.data._id}}</td>
               </tr>
               <tr v-if="gateway.data.registrationCode">
+                <th>IoT ID</th>
+                <td>{{gateway.data.iotId}}</td>
+              </tr>
+              <tr v-if="gateway.data.registrationCode">
                 <th>Registration Code</th>
                 <td>{{gateway.data.registrationCode}}</td>
               </tr>

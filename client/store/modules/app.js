@@ -19,6 +19,7 @@ const state = {
     createProject: createLoadObject(),
     deleteProject: createLoadObject(),
     addGatewayToProject: createLoadObject(),
+    removeGatewayFromProject: createLoadObject(),
 
     gateways: createLoadObject(),
     gateway: createLoadObject(),
