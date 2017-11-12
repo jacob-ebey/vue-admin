@@ -53,7 +53,7 @@
               <tr>
                 <th>Name</th>
                 <th>Iot ID</th>
-                <th>Code</th>
+                <th>Registration Code</th>
               </tr>
             </thead>
             <tbody v-if="project.data.gateways">

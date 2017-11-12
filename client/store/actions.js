@@ -99,6 +99,47 @@ export const doPost = ({ commit, state }, { http, whatToPost, params, body, muta
   }
 }
 
+export const doDelete = ({ commit, state }, { http, whatToPost, params, body, mutator, callback }) => {
+  if (http && whatToPost) {
+    commit(types.SET_LOADING, { whatToLoad: whatToPost, isLoading: true })
+    commit(types.SET_LOADING_DATA, { whatToLoad: whatToPost, data: null })
+
+    http.delete(format(endpoints[whatToPost], ...(params || [])), body, {
+      emulateJSON: true,
+      transformResponse: [(data) => {
+        let parsed = JSON.parse(data)
+        if (mutator) {
+          parsed = mutator(parsed)
+        }
+        return parsed
+      }]
+    }).then((response) => {
+      const data = response ? response.data : undefined
+
+      commit(types.SET_LOADING_DATA, { whatToLoad: whatToPost, data })
+      commit(types.SET_LOADING_ERROR, { whatToLoad: whatToPost, error: null })
+      if (callback) {
+        callback(data)
+      }
+    }).catch((error) => {
+      console.log(error)
+      let e = error
+      if (error && error.response && error.response.data && error.response.data.message) {
+        e = error.response.data.message
+      }
+
+      commit(types.SET_LOADING_DATA, { whatToLoad: whatToPost, data: null })
+      commit(types.SET_LOADING_ERROR, { whatToLoad: whatToPost, error: e })
+    }).then(() => {
+      commit(types.SET_LOADING, { whatToLoad: whatToPost, isLoading: false })
+    })
+  }
+}
+
 export const doPush = ({ commit }, { whereToPush, subPath, item }) => {
   commit(types.DO_PUSH, { whereToPush, subPath, item })
+}
+
+export const doSplice = ({ commit }, { whereToSplice, subPath, start, deleteCount }) => {
+  commit(types.DO_SPLICE, { whereToSplice, subPath, start, deleteCount })
 }

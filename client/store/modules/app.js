@@ -17,6 +17,7 @@ const state = {
     projects: createLoadObject(),
     project: createLoadObject(),
     createProject: createLoadObject(),
+    deleteProject: createLoadObject(),
     addGatewayToProject: createLoadObject(),
 
     gateways: createLoadObject(),
@@ -74,12 +75,18 @@ const mutations = {
 
   [types.DO_PUSH] (state, { whereToPush, subPath, item }) {
     let obj = state.loading[whereToPush].data
-    console.log(obj.gateways)
     if (subPath) {
       obj = getProperty(obj, subPath)
     }
-
     obj.push(item)
+  },
+
+  [types.DO_SPLICE] (state, { whereToSplice, subPath, start, deleteCount }) {
+    let obj = state.loading[whereToSplice].data
+    if (subPath) {
+      obj = getProperty(obj, subPath)
+    }
+    obj.splice(start, deleteCount)
   }
 }
 

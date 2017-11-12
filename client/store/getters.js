@@ -9,6 +9,8 @@ const loading = state => state.app.loading
 const projects = state => state.app.loading.projects
 const project = state => state.app.loading.project
 const createProject = state => state.app.loading.createProject
+const deleteProject = state => state.app.loading.deleteProject
+const addGatewayToProject = state => state.app.loading.addGatewayToProject
 
 const gateways = state => state.app.loading.gateways
 const gateway = state => state.app.loading.gateway
@@ -30,6 +32,8 @@ export {
   projects,
   project,
   createProject,
+  deleteProject,
+  addGatewayToProject,
 
   gateways,
   gateway,

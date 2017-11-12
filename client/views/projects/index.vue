@@ -23,14 +23,20 @@
           </th>
           <th>Name</th>
           <th>ID</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody v-if="loading.projects.data">
-        <router-link tag="tr" v-for="project in loading.projects.data" :key="project._id" :to="'projects/view/' + project._id"> 
+        <tr v-for="(project, index) in loading.projects.data" :key="project._id"> 
           <td><i class="fa fa-check has-text-success"></i></td>
-          <td>{{project.name}}</td>
+          <td><router-link :to="'projects/view/' + project._id">{{project.name}}</router-link></td>
           <td>{{project._id}}</td>
-        </router-link>
+          <td>
+            <button class="button is-danger has-text-centered" @click="openDeleteProject(project, index)">
+              <i class="fa fa-trash-o center-icon"></i>
+            </button>
+          </td>
+        </tr>
       </tbody>
     </table>
     <card-modal :visible="showAddProject" @close="closeAddProject" @ok="addProject" @cancel="closeAddProject" title="New Project">
@@ -41,6 +47,9 @@
           <input v-model="name" class="input" type="text" placeholder="name">
         </div>
       </div>
+    </card-modal>
+    <card-modal :visible="showDeleteProject && !!projectToDelete && indexToDelete !== null" @close="closeDeleteProject" @ok="deleteProject(projectToDelete, indexToDelete)" @cancel="closeDeleteProject" okText="Yes" cancelText="No" title="Delete Project">
+      <p>Do you really wish to delete {{projectToDelete && projectToDelete.name}}?</p>
     </card-modal>
   </div>
 </template>
@@ -64,8 +73,10 @@ export default {
   data () {
     return {
       showAddProject: false,
-      addError: null,
-      name: ''
+      name: '',
+      showDeleteProject: false,
+      projectToDelete: null,
+      indexToDelete: null
     }
   },
 
@@ -83,7 +94,9 @@ export default {
     ...mapActions([
       'doLoad',
       'doPost',
-      'doPush'
+      'doDelete',
+      'doPush',
+      'doSplice'
     ]),
     loadProjects (forceLoad = true) {
       this.doLoad({ http: this.$http, whatToLoad: 'projects', forceLoad })
@@ -94,6 +107,16 @@ export default {
     closeAddProject () {
       this.showAddProject = false
       this.name = ''
+    },
+    openDeleteProject (project, index) {
+      this.projectToDelete = project
+      this.showDeleteProject = true
+      this.indexToDelete = index
+    },
+    closeDeleteProject () {
+      this.showDeleteProject = false
+      this.projectToDelete = null
+      this.indexToDelete = null
     },
     addProject () {
       const project = {
@@ -109,6 +132,19 @@ export default {
           this.closeAddProject()
         }
       })
+    },
+    deleteProject (project, index) {
+      if (project) {
+        this.doDelete({
+          http: this.$http,
+          whatToPost: 'deleteProject',
+          params: [project._id],
+          callback: () => {
+            this.doSplice({ whereToSplice: 'projects', start: index, deleteCount: 1 })
+            this.closeDeleteProject()
+          }
+        })
+      }
     }
   }
 }
