@@ -1,5 +1,11 @@
 import * as types from '../mutation-types'
 
+const getProperty = (obj, path) => {
+  return path.split('.').reduce((prev, curr) => {
+    return prev ? prev[curr] : undefined
+  }, obj)
+}
+
 const createLoadObject = () => ({
   isLoading: false,
   data: null,
@@ -11,6 +17,7 @@ const state = {
     projects: createLoadObject(),
     project: createLoadObject(),
     createProject: createLoadObject(),
+    addGatewayToProject: createLoadObject(),
 
     gateways: createLoadObject(),
     gateway: createLoadObject(),
@@ -65,8 +72,14 @@ const mutations = {
     state.loading[whatToLoad].error = error
   },
 
-  [types.DO_PUSH] (state, { whatToLoad, item }) {
-    state.loading[whatToLoad].data.push(item)
+  [types.DO_PUSH] (state, { whereToPush, subPath, item }) {
+    let obj = state.loading[whereToPush].data
+    console.log(obj.gateways)
+    if (subPath) {
+      obj = getProperty(obj, subPath)
+    }
+
+    obj.push(item)
   }
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading.project.data">
+  <div v-if="project.data">
     <div class="tile is-ancestor">
       <div class="tile is-parent">
         <article class="tile is-child box">
@@ -8,19 +8,19 @@
             <tbody>
               <tr>
                 <th>Name</th>
-                <td>{{loading.project.data.name}}</td>
+                <td>{{project.data.name}}</td>
               </tr>
               <tr>
                 <th>Created At</th>
-                <td>{{loading.project.data.createdAt|formatDateAndTime}}</td>
+                <td>{{project.data.createdAt|formatDateAndTime}}</td>
               </tr>
               <tr>
                 <th>ID</th>
-                <td>{{loading.project.data._id}}</td>
+                <td>{{project.data._id}}</td>
               </tr>
               <tr>
                 <th>Owner</th>
-                <td>{{loading.project.data.ownedBy.username}}</td>
+                <td>{{project.data.ownedBy.username}}</td>
               </tr>
             </tbody>
           </table>
@@ -56,16 +56,11 @@
                 <th>Code</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>Gateway 01</td>
-                <td>65c4a11c-2bd1-4bbc-b56b-0ca6a837f37f</td>
-                <td>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</td>
-              </tr>
-              <tr>
-                <td>Gateway 02</td>
-                <td>10b852b1-28e6-44dd-96f5-e5282c9239b9</td>
-                <td>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</td>
+            <tbody v-if="project.data.gateways">
+              <tr v-for="gateway in project.data.gateways" :key="gateway._id">
+                <td>{{gateway.name}}</td>
+                <td>{{gateway.iotId}}</td>
+                <td>{{gateway.registrationCode}}</td>
               </tr>
             </tbody>
           </table>
@@ -104,14 +99,13 @@
       </div>
     </div>
   
-    <card-modal :visible="showAddGateway" @close="closeAddGateway" @ok="closeAddGateway" @cancel="closeAddGateway" title="Add Gateway">
+    <card-modal :visible="showAddGateway" @close="closeAddGateway" @ok="addGatewayToProject" @cancel="closeAddGateway" title="Add Gateway">
       <div class="field">
         <label class="label">Gateway</label>
         <div class="control">
           <div class="select">
-            <select v-model="gateway">
-              <option value="5">Gateway 05</option>
-              <option value="6">Gateway 06</option>
+            <select v-model="selectedGateway" v-if="gateways.data">
+              <option v-for="gateway in gateways.data" :key="gateway._id" :value="gateway._id">{{gateway.name}}</option>
             </select>
           </div>
         </div>
@@ -137,13 +131,14 @@
     },
   
     computed: mapGetters({
-      loading: 'loading'
+      project: 'project',
+      gateways: 'gateways'
     }),
   
     data () {
       return {
         showAddGateway: false,
-        gateway: '',
+        selectedGateway: '',
 
         eventData: {
           labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
@@ -159,14 +154,16 @@
     },
   
     mounted () {
-      this.loadProjects()
+      this.loadProject()
     },
   
     methods: {
       ...mapActions([
-        'doLoad'
+        'doLoad',
+        'doPost',
+        'doPush'
       ]),
-      loadProjects () {
+      loadProject () {
         this.doLoad({
           http: this.$http,
           whatToLoad: 'project',
@@ -174,12 +171,36 @@
           params: [this.$route.params.id]
         })
       },
+      loadGateways (forceLoad = true) {
+        this.doLoad({
+          http: this.$http,
+          whatToLoad: 'gateways',
+          forceLoad,
+          params: [this.$route.params.id]
+        })
+      },
       openAddGateway () {
         this.showAddGateway = true
+        this.loadGateways(false)
       },
       closeAddGateway () {
         this.showAddGateway = false
-        this.gateway = ''
+        this.selectedGateway = ''
+      },
+      addGatewayToProject () {
+        this.doPost({
+          http: this.$http,
+          whatToPost: 'addGatewayToProject',
+          params: [
+            this.$route.params.id,
+            this.selectedGateway
+          ],
+          callback: (item) => {
+            console.log(item)
+            this.doPush({ whereToPush: 'project', subPath: 'gateways', item })
+            this.closeAddGateway()
+          }
+        })
       }
     }
   }

@@ -77,20 +77,28 @@ export const doPost = ({ commit, state }, { http, whatToPost, params, body, muta
         return parsed
       }]
     }).then((response) => {
-      commit(types.SET_LOADING_DATA, { whatToLoad: whatToPost, data: response.data })
+      const data = response ? response.data : undefined
+
+      commit(types.SET_LOADING_DATA, { whatToLoad: whatToPost, data })
       commit(types.SET_LOADING_ERROR, { whatToLoad: whatToPost, error: null })
       if (callback) {
-        callback(response.data)
+        callback(data)
       }
     }).catch((error) => {
+      console.log(error)
+      let e = error
+      if (error && error.response && error.response.data && error.response.data.message) {
+        e = error.response.data.message
+      }
+
       commit(types.SET_LOADING_DATA, { whatToLoad: whatToPost, data: null })
-      commit(types.SET_LOADING_ERROR, { whatToLoad: whatToPost, error: error.response.data.message })
+      commit(types.SET_LOADING_ERROR, { whatToLoad: whatToPost, error: e })
     }).then(() => {
       commit(types.SET_LOADING, { whatToLoad: whatToPost, isLoading: false })
     })
   }
 }
 
-export const doPush = ({ commit }, { whereToPush, item }) => {
-  commit(types.DO_PUSH, { whatToLoad: whereToPush, item })
+export const doPush = ({ commit }, { whereToPush, subPath, item }) => {
+  commit(types.DO_PUSH, { whereToPush, subPath, item })
 }
