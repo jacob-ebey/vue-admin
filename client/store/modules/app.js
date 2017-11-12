@@ -22,7 +22,8 @@ const state = {
 
     gateways: createLoadObject(),
     gateway: createLoadObject(),
-    createGateway: createLoadObject()
+    createGateway: createLoadObject(),
+    deleteGateway: createLoadObject()
   },
   device: {
     isMobile: false,

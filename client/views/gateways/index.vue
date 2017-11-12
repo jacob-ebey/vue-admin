@@ -23,14 +23,20 @@
           </th>
           <th>Name</th>
           <th>ID</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody v-if="gateways.data">
-        <router-link tag="tr" v-for="gateway in gateways.data" :key="gateway._id" :to="'gateways/view/' + gateway._id"> 
+        <tr v-for="(gateway, index) in gateways.data" :key="gateway._id"> 
           <td><i class="fa fa-check has-text-success"></i></td>
-          <td>{{gateway.name}}</td>
+          <td><router-link :to="'gateways/view/' + gateway._id">{{gateway.name}}</router-link></td>
           <td>{{gateway._id}}</td>
-        </router-link>
+          <td>
+            <button class="button is-danger has-text-centered" @click="openDeleteGateway(gateway, index)">
+              <i class="fa fa-trash-o center-icon"></i>
+            </button>
+          </td>
+        </tr>
       </tbody>
     </table>
     <card-modal :visible="showAddGateway" @close="closeAddGateway" @ok="addGateway" @cancel="closeAddGateway" title="New Gateway">
@@ -41,6 +47,9 @@
           <input v-model="name" class="input" type="text" placeholder="name">
         </div>
       </div>
+    </card-modal>
+    <card-modal :visible="showDeleteGateway && !!gatewayToDelete && indexToDelete !== null" @close="closeDeleteGateway" @ok="deleteGateway(gatewayToDelete, indexToDelete)" @cancel="closeDeleteGateway" okText="Yes" cancelText="No" title="Delete Project">
+      <p>Do you really wish to delete {{gatewayToDelete && gatewayToDelete.name}}?</p>
     </card-modal>
   </div>
 </template>
@@ -64,7 +73,11 @@ export default {
   data () {
     return {
       showAddGateway: false,
-      name: ''
+      name: '',
+
+      showDeleteGateway: false,
+      gatewayToDelete: null,
+      indexToDelete: null
     }
   },
 
@@ -82,7 +95,9 @@ export default {
     ...mapActions([
       'doLoad',
       'doPost',
-      'doPush'
+      'doDelete',
+      'doPush',
+      'doSplice'
     ]),
     loadGateways (forceLoad = true) {
       this.doLoad({ http: this.$http, whatToLoad: 'gateways', forceLoad })
@@ -93,6 +108,16 @@ export default {
     closeAddGateway () {
       this.showAddGateway = false
       this.name = ''
+    },
+    openDeleteGateway (gateway, index) {
+      this.showDeleteGateway = true
+      this.gatewayToDelete = gateway
+      this.indexToDelete = index
+    },
+    closeDeleteGateway () {
+      this.showDeleteGateway = false
+      this.gatewayToDelete = null
+      this.indexToDelete = null
     },
     addGateway () {
       const gateway = {
@@ -108,6 +133,19 @@ export default {
           this.closeAddGateway()
         }
       })
+    },
+    deleteGateway (gateway, index) {
+      if (gateway) {
+        this.doDelete({
+          http: this.$http,
+          whatToPost: 'deleteGateway',
+          params: [gateway._id],
+          callback: () => {
+            this.doSplice({ whereToSplice: 'gateways', start: index, deleteCount: 1 })
+            this.closeDeleteGateway()
+          }
+        })
+      }
     }
   }
 }

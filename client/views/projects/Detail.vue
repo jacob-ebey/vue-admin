@@ -196,7 +196,6 @@
             this.selectedGateway
           ],
           callback: (item) => {
-            console.log(item)
             this.doPush({ whereToPush: 'project', subPath: 'gateways', item })
             this.closeAddGateway()
           }

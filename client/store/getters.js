@@ -15,6 +15,7 @@ const addGatewayToProject = state => state.app.loading.addGatewayToProject
 const gateways = state => state.app.loading.gateways
 const gateway = state => state.app.loading.gateway
 const createGateway = state => state.app.loading.createGateway
+const deleteGateway = state => state.app.loading.deleteGateway
 
 const componententry = state => {
   return state.menu.items.filter(c => c.meta && c.meta.label === 'Components')[0]
@@ -38,6 +39,7 @@ export {
   gateways,
   gateway,
   createGateway,
+  deleteGateway,
 
   componententry
 }
