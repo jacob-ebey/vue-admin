@@ -18,6 +18,8 @@ const gateway = state => state.app.loading.gateway
 const createGateway = state => state.app.loading.createGateway
 const deleteGateway = state => state.app.loading.deleteGateway
 
+const configurations = state => state.app.loading.configurations
+
 const componententry = state => {
   return state.menu.items.filter(c => c.meta && c.meta.label === 'Components')[0]
 }
@@ -42,6 +44,8 @@ export {
   gateway,
   createGateway,
   deleteGateway,
+
+  configurations,
 
   componententry
 }

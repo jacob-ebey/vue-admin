@@ -63,6 +63,9 @@
                 <td>{{gateway.iotId}}</td>
                 <td>{{gateway.registrationCode}}</td>
                 <td>
+                  <button class="button is-small has-text-centered" @click="openEditGateway(gateway, index)">
+                    <i class="fa fa-pencil center-icon"></i>
+                  </button>
                   <button class="button is-danger is-small has-text-centered" @click="openDeleteGateway(gateway, index)">
                     <i class="fa fa-trash-o center-icon"></i>
                   </button>
@@ -93,14 +96,20 @@
           </table>
           <tooltip label="See all logs" placement="right">
             <button class="button has-text-centered">
-                <i class="fa fa-chevron-down center-icon"></i>
-              </button>
+              <i class="fa fa-chevron-down center-icon"></i>
+            </button>
           </tooltip>
         </article>
       </div>
     </div>
   
-    <card-modal :visible="showAddGateway" @close="closeAddGateway" @ok="addGatewayToProject" @cancel="closeAddGateway" title="Add Gateway">
+    <card-modal
+      :visible="showAddGateway"
+      @ok="addGatewayToProject"
+      @close="closeAddGateway"
+      @cancel="closeAddGateway"
+      title="Add Gateway"
+    >
       <div class="field">
         <label class="label">Gateway</label>
         <div class="control">
@@ -113,8 +122,36 @@
       </div>
     </card-modal>
 
-    <card-modal :visible="showDeleteGateway && !!gatewayToDelete && indexToDelete !== null" @close="closeDeleteGateway" @ok="deleteGateway(gatewayToDelete, indexToDelete)" @cancel="closeDeleteGateway" okText="Yes" cancelText="No" title="Remove Gateway">
+    <card-modal
+      :visible="showDeleteGateway && !!gatewayToDelete && indexToDelete !== null"
+      @ok="deleteGateway(gatewayToDelete, indexToDelete)"
+      @close="closeDeleteGateway"
+      @cancel="closeDeleteGateway"
+      okText="Yes"
+      cancelText="No"
+      title="Remove Gateway"
+    >
       <p>Do you really wish to remove {{gatewayToDelete && gatewayToDelete.name}} from the project?</p>
+    </card-modal>
+
+    <card-modal
+      :title="'Edit ' + (gatewayToEdit && gatewayToEdit.name)"
+      :visible="showEditGateway && !!gatewayToEdit && indexToEdit !== null"
+      okText="Save"
+      @ok="editGateway(gatewayToEdit, indexToEdit)"
+      @close="closeEditGateway"
+      @cancel="closeEditGateway"
+    >
+      <div class="field" v-if="configurations.data">
+        <label class="label">Configuration</label>
+        <div class="control">
+          <div class="select">
+            <select v-model="selectedConfiguration">
+              <option v-for="configuration in configurations.data" :key="configuration._id" :value="configuration._id">{{configuration.name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </card-modal>
   </div>
 </template>
@@ -137,7 +174,8 @@
   
     computed: mapGetters({
       project: 'project',
-      gateways: 'gateways'
+      gateways: 'gateways',
+      configurations: 'configurations'
     }),
   
     data () {
@@ -148,6 +186,11 @@
         showDeleteGateway: false,
         gatewayToDelete: null,
         indexToDelete: null,
+
+        showEditGateway: false,
+        gatewayToEdit: null,
+        indexToEdit: null,
+        selectedConfiguration: '',
 
         eventData: {
           labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
@@ -174,6 +217,7 @@
         'doPush',
         'doSplice'
       ]),
+
       loadProject () {
         this.doLoad({
           http: this.$http,
@@ -182,6 +226,7 @@
           params: [this.$route.params.id]
         })
       },
+
       loadGateways (forceLoad = true) {
         this.doLoad({
           http: this.$http,
@@ -190,24 +235,51 @@
           params: [this.$route.params.id]
         })
       },
+
+      loadConfigurations (forceLoad = true) {
+        this.doLoad({
+          http: this.$http,
+          whatToLoad: 'configurations',
+          forceLoad
+        })
+      },
+
       openAddGateway () {
         this.showAddGateway = true
         this.loadGateways(false)
       },
+
       closeAddGateway () {
         this.showAddGateway = false
         this.selectedGateway = ''
       },
+
       openDeleteGateway (gateway, index) {
         this.showDeleteGateway = true
         this.gatewayToDelete = gateway
         this.indexToDelete = index
       },
+
       closeDeleteGateway () {
         this.showDeleteGateway = false
         this.gatewayToDelete = null
         this.indexToDelete = null
       },
+
+      openEditGateway (gateway, index) {
+        this.loadConfigurations(false)
+        this.showEditGateway = true
+        this.gatewayToEdit = gateway
+        this.indexToEdit = index
+      },
+
+      closeEditGateway () {
+        this.showEditGateway = false
+        this.gatewayToEdit = null
+        this.indexToEdit = null
+        this.selectedConfiguration = null
+      },
+
       addGatewayToProject () {
         this.doPost({
           http: this.$http,
@@ -222,6 +294,7 @@
           }
         })
       },
+
       deleteGateway (gateway, index) {
         if (gateway) {
           this.doDelete({
@@ -233,6 +306,12 @@
               this.closeDeleteGateway()
             }
           })
+        }
+      },
+
+      editGateway (gateway, index) {
+        if (gateway) {
+          this.closeEditGateway()
         }
       }
     }

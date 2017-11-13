@@ -15,6 +15,8 @@ export default {
   createGateway: '/api/gateways',
   deleteGateway: '/api/gateways/{0}',
 
+  configurations: '/api/configurations',
+
   // Add prod endpoints if not dev
   ...(!isDev ? prod : {})
 }
