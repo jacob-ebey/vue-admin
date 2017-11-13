@@ -30,6 +30,11 @@ export default new Router({
       component: require('../views/gateways/Detail')
     },
     {
+      name: 'Configuration detail',
+      path: '/configurations/view/:id',
+      component: require('../views/configurations/Detail')
+    },
+    {
       path: '*',
       redirect: '/'
     }

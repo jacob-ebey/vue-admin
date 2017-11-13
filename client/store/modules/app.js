@@ -26,7 +26,10 @@ const state = {
     createGateway: createLoadObject(),
     deleteGateway: createLoadObject(),
 
-    configurations: createLoadObject()
+    configurations: createLoadObject(),
+    configuration: createLoadObject(),
+    createConfiguration: createLoadObject(),
+    deleteConfiguration: createLoadObject()
   },
   device: {
     isMobile: false,

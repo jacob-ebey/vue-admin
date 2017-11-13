@@ -40,6 +40,16 @@ const state = {
         auth: true
       },
       component: lazyLoading('gateways', true)
+    },
+    {
+      name: 'Configurations',
+      path: '/configurations',
+      meta: {
+        icon: 'fa-cogs',
+        link: 'configurations/index.vue',
+        auth: true
+      },
+      component: lazyLoading('configurations', true)
     }
     // {
     //   name: 'Axios',
