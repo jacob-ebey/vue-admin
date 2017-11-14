@@ -58,9 +58,8 @@
             </thead>
             <tbody v-if="project.data.gateways">
               <tr v-for="(gateway, index) in project.data.gateways" :key="gateway._id">
-                <td>{{gateway.name}}</td>
-                <td>{{gateway.configuration && gateway.configuration.name}}</td>
-                <td>{{gateway.registrationCode}}</td>
+                <td><router-link :to="'/gateways/view/' + gateway._id">{{gateway.name}}</router-link></td>
+                <td><router-link v-if="gateway.configuration" :to="'/configurations/view/' + gateway.configuration._id">{{gateway.configuration.name}}</router-link></td>
                 <td>
                   <button class="button is-small has-text-centered" @click="openEditGateway(gateway, index)">
                     <i class="fa fa-pencil center-icon"></i>
