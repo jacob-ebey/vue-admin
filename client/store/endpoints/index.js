@@ -20,6 +20,8 @@ export default {
   configuration: '/api/configurations/{0}',
   createConfiguration: '/api/configurations',
   deleteConfiguration: '/api/configurations/{0}',
+  addDevice: '/api/configurations/{0}/devices',
+  removeDevice: '/api/configurations/{0}/devices/{1}',
 
   // Add prod endpoints if not dev
   ...(!isDev ? prod : {})

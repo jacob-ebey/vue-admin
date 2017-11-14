@@ -30,7 +30,9 @@ const state = {
     configurations: createLoadObject(),
     configuration: createLoadObject(),
     createConfiguration: createLoadObject(),
-    deleteConfiguration: createLoadObject()
+    deleteConfiguration: createLoadObject(),
+    addDevice: createLoadObject(),
+    removeDevice: createLoadObject()
   },
   device: {
     isMobile: false,
