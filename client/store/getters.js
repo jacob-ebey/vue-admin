@@ -25,6 +25,8 @@ const createConfiguration = state => state.app.loading.createConfiguration
 const deleteConfiguration = state => state.app.loading.deleteConfiguration
 const addDevice = state => state.app.loading.addDevice
 const removeDevice = state => state.app.loading.removeDevice
+const addController = state => state.app.loading.addController
+const removeController = state => state.app.loading.removeController
 
 const componententry = state => {
   return state.menu.items.filter(c => c.meta && c.meta.label === 'Components')[0]
@@ -58,6 +60,8 @@ export {
   deleteConfiguration,
   addDevice,
   removeDevice,
+  addController,
+  removeController,
 
   componententry
 }
