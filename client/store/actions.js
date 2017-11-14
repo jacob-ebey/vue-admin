@@ -99,6 +99,43 @@ export const doPost = ({ commit, state }, { http, whatToPost, params, body, muta
   }
 }
 
+export const doPut = ({ commit, state }, { http, whatToPut, params, body, mutator, callback }) => {
+  if (http && whatToPut) {
+    commit(types.SET_LOADING, { whatToLoad: whatToPut, isLoading: true })
+    commit(types.SET_LOADING_DATA, { whatToLoad: whatToPut, data: null })
+
+    http.put(format(endpoints[whatToPut], ...(params || [])), body, {
+      emulateJSON: true,
+      transformResponse: [(data) => {
+        let parsed = JSON.parse(data)
+        if (mutator) {
+          parsed = mutator(parsed)
+        }
+        return parsed
+      }]
+    }).then((response) => {
+      const data = response ? response.data : undefined
+
+      commit(types.SET_LOADING_DATA, { whatToLoad: whatToPut, data })
+      commit(types.SET_LOADING_ERROR, { whatToLoad: whatToPut, error: null })
+      if (callback) {
+        callback(data)
+      }
+    }).catch((error) => {
+      console.log(error)
+      let e = error
+      if (error && error.response && error.response.data && error.response.data.message) {
+        e = error.response.data.message
+      }
+
+      commit(types.SET_LOADING_DATA, { whatToLoad: whatToPut, data: null })
+      commit(types.SET_LOADING_ERROR, { whatToLoad: whatToPut, error: e })
+    }).then(() => {
+      commit(types.SET_LOADING, { whatToLoad: whatToPut, isLoading: false })
+    })
+  }
+}
+
 export const doDelete = ({ commit, state }, { http, whatToPost, params, body, mutator, callback }) => {
   if (http && whatToPost) {
     commit(types.SET_LOADING, { whatToLoad: whatToPost, isLoading: true })
@@ -134,6 +171,10 @@ export const doDelete = ({ commit, state }, { http, whatToPost, params, body, mu
       commit(types.SET_LOADING, { whatToLoad: whatToPost, isLoading: false })
     })
   }
+}
+
+export const setProperty = ({ commit }, { whereToSet, callback }) => {
+  commit(types.SET_PROPERTY, { whereToSet, callback })
 }
 
 export const doPush = ({ commit }, { whereToPush, subPath, item }) => {

@@ -9,3 +9,4 @@ export const SET_LOADING_ERROR = 'SET_LOADING_ERROR'
 
 export const DO_PUSH = 'DO_PUSH'
 export const DO_SPLICE = 'DO_SPLICE'
+export const SET_PROPERTY = 'SET_PROPERTY'

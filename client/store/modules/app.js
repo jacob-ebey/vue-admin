@@ -20,6 +20,7 @@ const state = {
     deleteProject: createLoadObject(),
     addGatewayToProject: createLoadObject(),
     removeGatewayFromProject: createLoadObject(),
+    linkConfiguration: createLoadObject(),
 
     gateways: createLoadObject(),
     gateway: createLoadObject(),
@@ -78,6 +79,11 @@ const mutations = {
 
   [types.SET_LOADING_ERROR] (state, { whatToLoad, error }) {
     state.loading[whatToLoad].error = error
+  },
+
+  [types.SET_PROPERTY] (state, { whereToSet, callback }) {
+    const obj = state.loading[whereToSet]
+    callback(obj)
   },
 
   [types.DO_PUSH] (state, { whereToPush, subPath, item }) {

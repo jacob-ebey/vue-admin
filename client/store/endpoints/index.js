@@ -9,6 +9,7 @@ export default {
   deleteProject: '/api/projects/{0}',
   addGatewayToProject: '/api/projects/{0}/{1}',
   removeGatewayFromProject: '/api/projects/{0}/{1}',
+  linkConfiguration: 'api/gateways/{0}/config/{1}',
 
   gateways: '/api/gateways',
   gateway: '/api/gateways/{0}',

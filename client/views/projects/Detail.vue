@@ -52,15 +52,14 @@
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Iot ID</th>
-                <th>Registration Code</th>
+                <th>Configuration</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody v-if="project.data.gateways">
               <tr v-for="(gateway, index) in project.data.gateways" :key="gateway._id">
                 <td>{{gateway.name}}</td>
-                <td>{{gateway.iotId}}</td>
+                <td>{{gateway.configuration && gateway.configuration.name}}</td>
                 <td>{{gateway.registrationCode}}</td>
                 <td>
                   <button class="button is-small has-text-centered" @click="openEditGateway(gateway, index)">
@@ -175,7 +174,8 @@
     computed: mapGetters({
       project: 'project',
       gateways: 'gateways',
-      configurations: 'configurations'
+      configurations: 'configurations',
+      linkConfiguration: 'linkConfiguration'
     }),
   
     data () {
@@ -213,9 +213,11 @@
       ...mapActions([
         'doLoad',
         'doPost',
+        'doPut',
         'doDelete',
         'doPush',
-        'doSplice'
+        'doSplice',
+        'setProperty'
       ]),
 
       loadProject () {
@@ -311,7 +313,22 @@
 
       editGateway (gateway, index) {
         if (gateway) {
-          this.closeEditGateway()
+          this.doPut({
+            http: this.$http,
+            whatToPut: 'linkConfiguration',
+            params: [gateway._id, this.selectedConfiguration],
+            callback: () => {
+              const selectedConfig = this.configurations.data.find((c) => c._id === this.selectedConfiguration) || {}
+
+              this.setProperty({
+                whereToSet: 'project',
+                callback: (project) => {
+                  project.data.gateways[index].configuration = selectedConfig
+                }
+              })
+              this.closeEditGateway()
+            }
+          })
         }
       }
     }

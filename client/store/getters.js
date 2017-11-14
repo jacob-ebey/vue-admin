@@ -12,6 +12,7 @@ const createProject = state => state.app.loading.createProject
 const deleteProject = state => state.app.loading.deleteProject
 const addGatewayToProject = state => state.app.loading.addGatewayToProject
 const removeGatewayFromProject = state => state.app.loading.removeGatewayFromProject
+const linkConfiguration = state => state.app.loading.linkConfiguration
 
 const gateways = state => state.app.loading.gateways
 const gateway = state => state.app.loading.gateway
@@ -42,6 +43,7 @@ export {
   deleteProject,
   addGatewayToProject,
   removeGatewayFromProject,
+  linkConfiguration,
 
   gateways,
   gateway,
