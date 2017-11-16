@@ -271,6 +271,7 @@
         this.loadConfigurations(false)
         this.showEditGateway = true
         this.gatewayToEdit = gateway
+        this.selectedConfiguration = gateway.configuration._id
         this.indexToEdit = index
       },
 

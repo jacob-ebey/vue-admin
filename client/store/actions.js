@@ -181,6 +181,6 @@ export const doPush = ({ commit }, { whereToPush, subPath, item }) => {
   commit(types.DO_PUSH, { whereToPush, subPath, item })
 }
 
-export const doSplice = ({ commit }, { whereToSplice, subPath, start, deleteCount }) => {
-  commit(types.DO_SPLICE, { whereToSplice, subPath, start, deleteCount })
+export const doSplice = ({ commit }, { whereToSplice, subPath, start, deleteCount, newItems }) => {
+  commit(types.DO_SPLICE, { whereToSplice, subPath, start, deleteCount, newItems })
 }

@@ -33,8 +33,10 @@ const state = {
     deleteConfiguration: createLoadObject(),
     addDevice: createLoadObject(),
     removeDevice: createLoadObject(),
+    editDevice: createLoadObject(),
     addController: createLoadObject(),
-    removeController: createLoadObject()
+    removeController: createLoadObject(),
+    editController: createLoadObject()
   },
   device: {
     isMobile: false,
@@ -98,12 +100,12 @@ const mutations = {
     obj.push(item)
   },
 
-  [types.DO_SPLICE] (state, { whereToSplice, subPath, start, deleteCount }) {
+  [types.DO_SPLICE] (state, { whereToSplice, subPath, start, deleteCount, newItems }) {
     let obj = state.loading[whereToSplice].data
     if (subPath) {
       obj = getProperty(obj, subPath)
     }
-    obj.splice(start, deleteCount)
+    obj.splice(start, deleteCount, ...(newItems || []))
   }
 }
 

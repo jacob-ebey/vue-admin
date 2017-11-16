@@ -21,9 +21,11 @@ export default {
   createConfiguration: '/api/configurations',
   deleteConfiguration: '/api/configurations/{0}',
   addDevice: '/api/configurations/{0}/devices',
-  addController: '/api/configurations/{0}/controllers',
   removeDevice: '/api/configurations/{0}/devices/{1}',
+  editDevice: '/api/configurations/{0}/devices/{1}',
+  addController: '/api/configurations/{0}/controllers',
   removeController: '/api/configurations/{0}/controllers/{1}',
+  editController: '/api/configurations/{0}/controllers/{1}',
 
   // Add prod endpoints if not dev
   ...(!isDev ? prod : {})

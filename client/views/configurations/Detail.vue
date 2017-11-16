@@ -35,12 +35,13 @@
         </article>
       </div>
     </div>
+
     <div class="tile is-ancestor">
       <div class="tile is-parent">
         <article class="tile is-child box">
           <h4 class="title">Devices</h4>
           <div class="table-buttons">
-            <button class="button is-success is-small has-text-centered" @click="openAddDevice">
+            <button class="button is-success is-small has-text-centered" @click="addDeviceOpen = true">
               <span class="icon is-small">
                 <i class="fa fa-plus center-icon"></i>
               </span>
@@ -49,8 +50,6 @@
               </span>
             </button>
           </div>
-          <span>{{removeDevice.data}}</span>
-          <span>{{removeDevice.error}}</span>
           <table class="table is-striped">
             <thead>
               <tr>
@@ -70,7 +69,10 @@
                 <td>{{device.address}}</td>
                 <td>{{device.defaultValue}}</td>
                 <td>
-                  <button class="button is-danger is-small has-text-centered" @click="openDeleteDevice(device, index)">
+                  <button class="button is-small has-text-centered" @click="deviceToEdit = device; deviceIndexToEdit = index">
+                    <i class="fa fa-pencil center-icon"></i>
+                  </button>
+                  <button class="button is-danger is-small has-text-centered" @click="deviceToDelete = device; deviceIndexToDelete = index">
                     <i class="fa fa-trash-o center-icon"></i>
                   </button>
                 </td>
@@ -80,12 +82,13 @@
         </article>
       </div>
     </div>
+
     <div class="tile is-ancestor">
       <div class="tile is-parent">
         <article class="tile is-child box">
           <h4 class="title">Controllers</h4>
           <div class="table-buttons">
-            <button class="button is-success is-small has-text-centered" @click="openAddController">
+            <button class="button is-success is-small has-text-centered" @click="addControllerOpen = true">
               <span class="icon is-small">
                 <i class="fa fa-plus center-icon"></i>
               </span>
@@ -111,7 +114,10 @@
                 <td>{{controller.inputs.length}}</td>
                 <td>{{controller.outputs.length}}</td>
                 <td>
-                  <button class="button is-danger is-small has-text-centered" @click="openDeleteController(controller, index)">
+                  <button class="button is-small has-text-centered" @click="controllerToEdit = controller; controllerIndexToEdit = index">
+                    <i class="fa fa-pencil center-icon"></i>
+                  </button>
+                  <button class="button is-danger is-small has-text-centered" @click="controllerToDelete = controller; controllerIndexToDelete = index">
                     <i class="fa fa-trash-o center-icon"></i>
                   </button>
                 </td>
@@ -122,11 +128,25 @@
       </div>
     </div>
 
+    <device-form
+      :visible="addDeviceOpen"
+      @submit="handleAddDevice"
+      @cancel="addDeviceOpen = false"
+    />
+
+    <device-form
+      title="Edit Device"
+      :visible="!!deviceToEdit"
+      :initialValues="deviceToEdit"
+      @submit="handleEditDevice"
+      @cancel="deviceToEdit = null"
+    />
+
     <card-modal
-      :visible="showDeleteDevice && !!deviceToDelete && deviceIndexToDelete !== null"
-      @ok="deleteDevice(deviceToDelete, deivceIndexToDelete)"
-      @close="closeDeleteDevice"
-      @cancel="closeDeleteDevice"
+      :visible="!!deviceToDelete"
+      @ok="handleDeleteDevice(deviceToDelete, deviceIndexToDelete)"
+      @close="deviceToDelete = null"
+      @cancel="deviceToDelete = null"
       okText="Yes"
       cancelText="No"
       title="Remove Device"
@@ -135,187 +155,34 @@
       <p>Do you really wish to remove this device from the configuration?</p>
     </card-modal>
 
+    <controller-form
+      :visible="addControllerOpen"
+      :error="addController.error"
+      :devices="configuration.data.devices"
+      @submit="handleAddController"
+      @cancel="addControllerOpen = false"
+    />
+
+    <controller-form
+      title="Edit Controller"
+      :visible="!!controllerToEdit"
+      :initialValues="controllerToEdit"
+      :devices="configuration.data.devices"
+      @submit="handleEditController"
+      @cancel="controllerToEdit = null"
+    />
+
     <card-modal
-      :visible="showDeleteController && !!controllerToDelete && controllerIndexToDelete !== null"
-      @ok="deleteController(controllerToDelete, controllerIndexToDelete)"
-      @close="closeDeleteController"
-      @cancel="closeDeleteController"
+      :visible="!!controllerToDelete"
+      @ok="handleDeleteController(controllerToDelete, controllerIndexToDelete)"
+      @close="controllerToDelete = null"
+      @cancel="controllerToDelete = null"
       okText="Yes"
       cancelText="No"
       title="Remove Controller"
     >
       <div v-show="removeController.error" style="color:red; word-wrap:break-word;">{{ removeController.error }}</div>
       <p>Do you really wish to remove this controller from the configuration?</p>
-    </card-modal>
-
-    <card-modal
-      :visible="showAddDevice"
-      @ok="doAddDevice"
-      @close="closeAddDevice"
-      @cancel="closeAddDevice"
-      okText="Add"
-      title="Add Device"
-    >
-      <div v-show="addDevice.error" style="color:red; word-wrap:break-word;">{{ addDevice.error }}</div>
-      
-      <div class="field">
-        <label class="label">Name</label>
-        <div class="control">
-          <input v-model="device.name" class="input" type="text" placeholder="name">
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">Type</label>
-        <div class="control">
-          <div class="select">
-            <select v-model="device.type">
-              <option value="GPIO">GPIO</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">Mode</label>
-        <div class="control">
-          <div class="select">
-            <select v-model="device.mode">
-              <option value="discreteOut">Discrete Out</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">Address</label>
-        <div class="control">
-          <input v-model="device.address" class="input" type="text" placeholder="address">
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">Default Value</label>
-        <div class="control">
-          <input v-model="device.defaultValue" class="input" type="number" placeholder="0">
-        </div>
-      </div>
-    </card-modal>
-
-    <card-modal
-      :visible="showAddController"
-      @ok="doAddController"
-      @close="closeAddController"
-      @cancel="closeAddController"
-      okText="Add"
-      title="Add Controller"
-    >
-      <div v-show="addController.error" style="color:red; word-wrap:break-word;">{{ addController.error }}</div>
-      
-      <div class="field">
-        <label class="label">Name</label>
-        <input v-model="controller.name" class="input" type="text" placeholder="name">
-      </div>
-
-      <div class="field">
-        <label class="label">Type</label>
-        <div class="control">
-          <div class="select">
-            <select v-model="controller.type">
-              <option value="timer">Timer</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">
-          <span>Inputs</span>
-          <button class="button is-success is-small has-text-centered" @click="addInput">
-            <i class="fa fa-plus center-icon"></i>
-          </button>
-        </label>
-        <div class="control indent" v-for="(input, index) in controller.inputs" :key="input">
-          <span>{{index + 1}}.)</span>
-          <div class="select">
-            <select v-model="controller.inputs[index]">
-              <option v-for="device in configuration.data.devices" :key="device._id" :value="device._id">{{device.name}}</option>
-            </select>
-          </div>
-          <button class="button is-danger is-small has-text-centered" @click="removeInput(index)">
-            <i class="fa fa-trash-o center-icon"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">
-          <span>Outputs</span>
-          <button class="button is-success is-small has-text-centered" @click="addOutput">
-            <i class="fa fa-plus center-icon"></i>
-          </button>
-        </label>
-        <div class="control indent" v-for="(output, index) in controller.outputs" :key="output">
-          <span>{{index + 1}}.)</span>
-          <div class="select">
-            <select v-model="controller.outputs[index]">
-              <option v-for="device in configuration.data.devices" :key="device._id" :value="device._id">{{device.name}}</option>
-            </select>
-          </div>
-          <button class="button is-danger is-small has-text-centered" @click="removeOutput(index)">
-            <i class="fa fa-trash-o center-icon"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="field" v-if="controller.type === 'timer'">
-        <label class="label">
-          <span>Schedule</span>
-          <button class="button is-success is-small has-text-centered" @click="addSchedule">
-            <i class="fa fa-plus center-icon"></i>
-          </button>
-        </label>
-        <div class="indent" v-for="(schedule, scheduleIndex) in controller.schedule" :key="scheduleIndex">
-          <div class="field">
-            <label class="label">Time</label>
-            <div class="control">
-              <input v-model="controller.schedule[scheduleIndex].dateTime" class="input" type="text" placeholder="time">
-            </div>
-          </div>
-          <div class="field">
-            <label class="label">
-              <span>Actuators</span>
-              <button class="button is-success is-small has-text-centered" @click="addActuator(scheduleIndex)">
-                <i class="fa fa-plus center-icon"></i>
-              </button>
-            </label>
-            <div
-              class="control indent"
-              v-for="(actuator, actuatorIndex) in controller.schedule[scheduleIndex].actuators"
-              :key="actuatorIndex"
-            >
-              <div class="field">
-                <label class="label">Output from above</label>
-                <div class="select">
-                  <select v-model="controller.schedule[scheduleIndex].actuators[actuatorIndex]">
-                    <option v-for="(output, n) in controller.outputs" :key="n" :value="n">Output {{n + 1}}</option>
-                  </select>
-                </div>
-              </div>
-              <div class="field">
-                <label class="label">Value</label>
-                <input v-model="controller.schedule[scheduleIndex].actuatorStates[actuatorIndex]" class="input" type="number" placeholder="0">
-              </div>
-              <button class="button is-danger is-small has-text-centered remove-schedule-button" @click="removeActuator(scheduleIndex, actuatorIndex)">
-                <i class="fa fa-trash-o center-icon"></i>
-              </button>
-            </div>
-          </div>
-          <button class="button is-danger is-small has-text-centered remove-schedule-button" @click="removeSchedule(scheduleIndex)">
-            <i class="fa fa-trash-o center-icon"></i>
-          </button>
-        </div>
-      </div>
     </card-modal>
   </div>
 </template>
@@ -325,65 +192,54 @@
     mapGetters,
     mapActions
   } from 'vuex'
-  import Chartist from 'vue-bulma-chartist'
+
   import { CardModal } from 'vue-bulma-modal'
-  import Tooltip from 'vue-bulma-tooltip'
 
-  const createDefaultController = () => ({
-    inputs: [ null ],
-    outputs: [ null ],
-    schedule: []
-  })
+  import ControllerForm from './forms/ControllerForm'
+  import DeviceForm from './forms/DeviceForm'
 
-  const createDefaultSchedule = () => ({
-    actuators: [],
-    actuatorStates: []
-  })
-  
   export default {
     components: {
       CardModal,
-      Chartist,
-      Tooltip
+      ControllerForm,
+      DeviceForm
     },
-  
-    computed: mapGetters({
-      configuration: 'configuration',
-      addDevice: 'addDevice',
-      removeDevice: 'removeDevice',
-      addController: 'addController',
-      removeController: 'removeController'
-    }),
 
     data () {
       return {
-        showAddDevice: false,
-        device: {},
-
-        showDeleteDevice: false,
+        addDeviceOpen: false,
+        deviceToEdit: null,
+        deviceIndexToEdit: null,
         deviceToDelete: null,
-        deivceIndexToDelete: null,
+        deviceIndexToDelete: null,
 
-        showAddController: false,
-        controller: createDefaultController(),
-
-        showDeleteController: false,
+        addControllerOpen: false,
+        controllerToEdit: null,
+        controllerIndexToEdit: null,
         controllerToDelete: null,
         controllerIndexToDelete: null
       }
     },
 
+    computed: mapGetters({
+      addController: 'addController',
+      configuration: 'configuration',
+      removeController: 'removeController',
+      removeDevice: 'removeDevice'
+    }),
+
     mounted () {
       this.loadConfiguration()
     },
-  
+
     methods: {
       ...mapActions([
         'doLoad',
         'doPut',
         'doDelete',
         'doPush',
-        'doSplice'
+        'doSplice',
+        'setProperty'
       ]),
 
       loadConfiguration () {
@@ -395,97 +251,97 @@
         })
       },
 
-      openAddDevice () {
-        this.showAddDevice = true
-      },
-
-      closeAddDevice () {
-        this.showAddDevice = false
-        this.device = {}
-      },
-
-      openDeleteDevice (device, index) {
-        this.showDeleteDevice = true
-        this.deviceToDelete = device
-        this.deviceIndexToDelete = index
-      },
-
-      closeDeleteDevice () {
-        this.showDeleteDevice = false
-        this.deviceToDelete = null
-        this.deviceIndexToDelete = null
-      },
-
-      openAddController () {
-        this.showAddController = true
-      },
-
-      closeAddController () {
-        this.showAddController = false
-        this.controller = createDefaultController()
-      },
-
-      openDeleteController (controller, index) {
-        this.showDeleteController = true
-        this.controllerToDelete = controller
-        this.controllerIndexToDelete = index
-      },
-
-      closeDeleteController () {
-        this.showDeleteController = false
-        this.controllerToDelete = null
-        this.controllerIndexToDelete = null
-      },
-
-      doAddDevice () {
+      handleAddDevice (device, clear) {
         this.doPut({
           http: this.$http,
           whatToPut: 'addDevice',
           params: [this.$route.params.id],
-          body: this.device,
+          body: device,
           callback: (item) => {
+            this.addDeviceOpen = false
             this.doPush({ whereToPush: 'configuration', subPath: 'devices', item })
-            this.closeAddDevice()
+            clear()
           }
         })
       },
 
-      deleteDevice (device, index) {
+      handleEditDevice (device, clear) {
+        this.doPut({
+          http: this.$http,
+          whatToPut: 'editDevice',
+          params: [this.$route.params.id, device._id],
+          body: device,
+          callback: (editedDevice) => {
+            this.setProperty({
+              whereToSet: 'configuration',
+              callback: (configuration) => {
+                console.log(editedDevice.defaultValue)
+                configuration.data.devices[this.deviceIndexToEdit].name = editedDevice.name
+                configuration.data.devices[this.deviceIndexToEdit].type = editedDevice.type
+                configuration.data.devices[this.deviceIndexToEdit].mode = editedDevice.mode
+                configuration.data.devices[this.deviceIndexToEdit].address = editedDevice.address
+                configuration.data.devices[this.deviceIndexToEdit].defaultValue = editedDevice.defaultValue
+              }
+            })
+            this.deviceToEdit = null
+            clear()
+          }
+        })
+      },
+
+      handleDeleteDevice (device, index) {
         if (device) {
           this.doDelete({
             http: this.$http,
             whatToPost: 'removeDevice',
             params: [this.$route.params.id, device._id],
-            callback: () => {
+            callback: (r) => {
+              console.log(r)
               this.doSplice({ whereToSplice: 'configuration', subPath: 'devices', start: index, deleteCount: 1 })
-              this.closeDeleteDevice()
+              this.deviceToDelete = null
             }
           })
         }
       },
 
-      doAddController () {
-        const body = {
-          ...this.controller,
-          inputs: this.controller.inputs.filter(item => item),
-          outputs: this.controller.outputs.filter(item => item)
-        }
-
-        console.log(JSON.stringify(body, null, 2))
-
+      handleAddController (controller, clear) {
         this.doPut({
           http: this.$http,
           whatToPut: 'addController',
           params: [this.$route.params.id],
-          body,
+          body: controller,
           callback: (item) => {
+            this.addControllerOpen = false
             this.doPush({ whereToPush: 'configuration', subPath: 'controllers', item })
-            this.closeAddController()
+            clear()
           }
         })
       },
 
-      deleteController (controller, index) {
+      handleEditController (controller, clear) {
+        this.doPut({
+          http: this.$http,
+          whatToPut: 'editController',
+          params: [this.$route.params.id, controller._id],
+          body: controller,
+          callback: (item) => {
+            this.setProperty({
+              whereToSet: 'configuration',
+              callback: (configuration) => {
+                configuration.data.controllers[this.controllerIndexToEdit].name = item.name
+                configuration.data.controllers[this.controllerIndexToEdit].type = item.type
+                configuration.data.controllers[this.controllerIndexToEdit].inputs = item.inputs
+                configuration.data.controllers[this.controllerIndexToEdit].outputs = item.outputs
+                configuration.data.controllers[this.controllerIndexToEdit].schedule = item.schedule
+              }
+            })
+            this.controllerToEdit = null
+            clear()
+          }
+        })
+      },
+
+      handleDeleteController (controller, index) {
         if (controller) {
           this.doDelete({
             http: this.$http,
@@ -493,73 +349,11 @@
             params: [this.$route.params.id, controller._id],
             callback: () => {
               this.doSplice({ whereToSplice: 'configuration', subPath: 'controllers', start: index, deleteCount: 1 })
-              this.closeDeleteController()
+              this.controllerToDelete = null
             }
           })
         }
-      },
-
-      addInput () {
-        if (this.controller.inputs[this.controller.inputs.length - 1]) {
-          this.controller.inputs.push(null)
-        }
-      },
-
-      removeInput (index) {
-        if (this.controller.inputs.length === 1) {
-          this.controller.inputs = [null]
-        } else {
-          this.controller.inputs.splice(index, 1)
-        }
-      },
-
-      addOutput () {
-        if (this.controller.outputs[this.controller.outputs.length - 1]) {
-          this.controller.outputs.push(null)
-        }
-      },
-
-      removeOutput (index) {
-        if (this.controller.outputs.length === 1) {
-          this.controller.outputs = [null]
-        } else {
-          this.controller.outputs.splice(index, 1)
-        }
-      },
-
-      addSchedule () {
-        this.controller.schedule.push(createDefaultSchedule())
-      },
-
-      removeSchedule (index) {
-        this.controller.schedule.splice(index, 1)
-      },
-
-      addActuator (index) {
-        this.controller.schedule[index].actuators.push(null)
-        this.controller.schedule[index].actuatorStates.push(null)
-      },
-
-      removeActuator (scheduleIndex, actuatorIndex) {
-        this.controller.schedule[scheduleIndex].actuators.splice(actuatorIndex, 1)
-        this.controller.schedule[scheduleIndex].actuatorStates.splice(actuatorIndex, 1)
       }
     }
   }
 </script>
-
-<style lang="scss" scoped>
-  @import '~bulma/sass/utilities/variables';
-  .panel-label {
-    color: $text-light;
-    margin-right: 7px;
-  }
-  .indent {
-    padding-left: 20px;
-    margin-bottom: 10px;
-    border-left: 1px solid $primary;
-  }
-  .remove-schedule-button {
-    margin-top: 10px;
-  }
-</style>
