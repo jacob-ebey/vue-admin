@@ -72,6 +72,9 @@
                   <button class="button is-small has-text-centered" @click="deviceToEdit = device; deviceIndexToEdit = index">
                     <i class="fa fa-pencil center-icon"></i>
                   </button>
+                  <button class="button is-small has-text-centered" @click="deviceToCopy = device; addDeviceOpen = true">
+                    <i class="fa fa-copy center-icon"></i>
+                  </button>
                   <button class="button is-danger is-small has-text-centered" @click="deviceToDelete = device; deviceIndexToDelete = index">
                     <i class="fa fa-trash-o center-icon"></i>
                   </button>
@@ -117,6 +120,9 @@
                   <button class="button is-small has-text-centered" @click="controllerToEdit = controller; controllerIndexToEdit = index">
                     <i class="fa fa-pencil center-icon"></i>
                   </button>
+                  <button class="button is-small has-text-centered" @click="controllerToCopy = controller; addControllerOpen = true">
+                    <i class="fa fa-copy center-icon"></i>
+                  </button>
                   <button class="button is-danger is-small has-text-centered" @click="controllerToDelete = controller; controllerIndexToDelete = index">
                     <i class="fa fa-trash-o center-icon"></i>
                   </button>
@@ -129,7 +135,9 @@
     </div>
 
     <device-form
+      :title="deviceToCopy ? 'Copy Device' : 'New Device'"
       :visible="addDeviceOpen"
+      :initialValues="deviceToCopy"
       @submit="handleAddDevice"
       @cancel="addDeviceOpen = false"
     />
@@ -156,11 +164,13 @@
     </card-modal>
 
     <controller-form
+      :title="controllerToCopy ? 'Copy Controller' : 'New Controller'"
       :visible="addControllerOpen"
       :error="addController.error"
+      :initialValues="controllerToCopy"
       :devices="configuration.data.devices"
       @submit="handleAddController"
-      @cancel="addControllerOpen = false"
+      @cancel="addControllerOpen = false; controllerToCopy = null"
     />
 
     <controller-form
@@ -208,12 +218,14 @@
     data () {
       return {
         addDeviceOpen: false,
+        deviceToCopy: null,
         deviceToEdit: null,
         deviceIndexToEdit: null,
         deviceToDelete: null,
         deviceIndexToDelete: null,
 
         addControllerOpen: false,
+        controllerToCopy: null,
         controllerToEdit: null,
         controllerIndexToEdit: null,
         controllerToDelete: null,

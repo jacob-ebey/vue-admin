@@ -67,7 +67,7 @@
           <i class="fa fa-plus center-icon"></i>
         </button>
         <div v-for="(output, index) in value.outputs" :key="index" class="field indent">
-          <label class="label">Device</label>
+          <label class="label">Device {{index + 1}}</label>
           <div class="control">
             <div class="select">
               <select v-model="value.outputs[index]">
@@ -114,14 +114,14 @@
             </div>
             <div class="field indent" v-for="(acuator, actuatorIndex) in value.schedule[index].actuators" :key="actuatorIndex">
               <div class="control">
-                <label class="label">Actuator</label>
+                <label class="label">Output</label>
                 <div class="select">
                   <select v-model="value.schedule[index].actuators[actuatorIndex]">
                     <option
                       v-for="(output, outputIndex) in value.outputs"
                       :key="outputIndex"
                       :value="outputIndex">
-                      {{outputIndex + 1}}
+                      Device {{outputIndex + 1}}
                     </option>
                   </select>
                 </div>
