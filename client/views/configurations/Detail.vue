@@ -4,6 +4,16 @@
       <div class="tile is-parent">
         <article class="tile is-child box">
           <h4 class="title">Summary</h4>
+          <div class="table-buttons">
+            <button class="button is-small has-text-centered" @click="editConfigurationOpen = true">
+              <span class="icon is-small">
+                <i class="fa fa-pencil center-icon"></i>
+              </span>
+              <span>
+                Edit Summary
+              </span>
+            </button>
+          </div>
           <table class="table">
             <tbody>
               <tr>
@@ -61,7 +71,7 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody v-if="configuration.data">
+            <tbody>
               <tr v-for="(device, index) in configuration.data.devices" :key="device._id"> 
                 <td>{{device.name}}</td>
                 <td>{{device.type}}</td>
@@ -134,6 +144,14 @@
       </div>
     </div>
 
+    <configuration-form
+      title="Edit Summary"
+      :visible="editConfigurationOpen"
+      :initialValues="configToEdit"
+      @submit="handleEditConfiguration"
+      @cancel="editConfigurationOpen = false"
+    />
+
     <device-form
       :title="deviceToCopy ? 'Copy Device' : 'New Device'"
       :visible="addDeviceOpen"
@@ -205,18 +223,22 @@
 
   import { CardModal } from 'vue-bulma-modal'
 
+  import ConfigurationForm from './forms/ConfigurationForm'
   import ControllerForm from './forms/ControllerForm'
   import DeviceForm from './forms/DeviceForm'
 
   export default {
     components: {
       CardModal,
+      ConfigurationForm,
       ControllerForm,
       DeviceForm
     },
 
     data () {
       return {
+        editConfigurationOpen: false,
+
         addDeviceOpen: false,
         deviceToCopy: null,
         deviceToEdit: null,
@@ -233,12 +255,20 @@
       }
     },
 
-    computed: mapGetters({
-      addController: 'addController',
-      configuration: 'configuration',
-      removeController: 'removeController',
-      removeDevice: 'removeDevice'
-    }),
+    computed: {
+      ...mapGetters({
+        addController: 'addController',
+        configuration: 'configuration',
+        removeController: 'removeController',
+        removeDevice: 'removeDevice'
+      }),
+
+      configToEdit () {
+        return {
+          name: this.configuration.data.name
+        }
+      }
+    },
 
     mounted () {
       this.loadConfiguration()
@@ -260,6 +290,25 @@
           whatToLoad: 'configuration',
           forceLoad: true,
           params: [this.$route.params.id]
+        })
+      },
+
+      handleEditConfiguration (editedConfig, clear) {
+        this.doPut({
+          http: this.$http,
+          whatToPut: 'editConfiguration',
+          params: [this.$route.params.id],
+          body: editedConfig,
+          callback: (item) => {
+            this.editConfigurationOpen = false
+            this.setProperty({
+              whereToSet: 'configuration',
+              callback: (configuration) => {
+                configuration.data.name = item.name
+              }
+            })
+            clear()
+          }
         })
       },
 

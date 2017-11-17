@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="table-buttons">
-      <button @click="openAddConfiguration" class="button is-success has-text-centered">
+      <button @click="addConfigurationOpen = true" class="button is-success has-text-centered">
         <span class="icon is-small">
           <i class="fa fa-plus center-icon"></i>
         </span>
@@ -32,6 +32,9 @@
           <td><router-link :to="'configurations/view/' + configuration._id">{{configuration.name}}</router-link></td>
           <td>{{configuration._id}}</td>
           <td>
+            <button class="button has-text-centered" @click="configurationToCopy = configuration; addConfigurationOpen = true">
+              <i class="fa fa-copy center-icon"></i>
+            </button>
             <button class="button is-danger has-text-centered" @click="openDeleteConfiguration(configuration, index)">
               <i class="fa fa-trash-o center-icon"></i>
             </button>
@@ -39,26 +42,19 @@
         </tr>
       </tbody>
     </table>
-    <card-modal
-      :visible="showAddConfiguration"
-      @ok="addConfiguration"
-      @close="closeAddConfiguration"
-      @cancel="closeAddConfiguration"
-      title="New Configuration"
-    >
-      <div v-show="createConfiguration.error" style="color:red; word-wrap:break-word;">{{ createConfiguration.error }}</div>
-      <div class="field">
-        <label class="label">Name</label>
-        <div class="control">
-          <input v-model="name" class="input" type="text" placeholder="name">
-        </div>
-      </div>
-    </card-modal>
+
+    <configuration-form
+      :visible="addConfigurationOpen"
+      :initialValues="configurationToCopy"
+      @submit="handleAddConfiguration"
+      @cancel="addConfigurationOpen = false"
+    />
+
     <card-modal
       :visible="showDeleteConfiguration && !!configurationToDelete && indexToDelete !== null"
       @ok="removeConfiguration(configurationToDelete, indexToDelete)"
-      @close="closeDeleteConfiguration"
-      @cancel="closeDeleteConfiguration"
+      @close="showDeleteConfiguration = false"
+      @cancel="showDeleteConfiguration = false"
       title="Delete Configuration"
       okText="Yes"
       cancelText="No"
@@ -74,9 +70,12 @@ import { mapGetters, mapActions } from 'vuex'
 import { CardModal } from 'vue-bulma-modal'
 import Tooltip from 'vue-bulma-tooltip'
 
+import ConfigurationForm from './forms/ConfigurationForm'
+
 export default {
   components: {
     CardModal,
+    ConfigurationForm,
     Tooltip
   },
 
@@ -88,12 +87,12 @@ export default {
 
   data () {
     return {
-      showAddConfiguration: false,
-      name: '',
-
       showDeleteConfiguration: false,
       configurationToDelete: null,
-      indexToDelete: null
+      indexToDelete: null,
+
+      addConfigurationOpen: false,
+      configurationToCopy: null
     }
   },
 
@@ -115,41 +114,25 @@ export default {
       'doPush',
       'doSplice'
     ]),
+
     loadConfigurations (forceLoad = true) {
       this.doLoad({ http: this.$http, whatToLoad: 'configurations', forceLoad })
     },
-    openAddConfiguration () {
-      this.showAddConfiguration = true
-    },
-    closeAddConfiguration () {
-      this.showAddConfiguration = false
-      this.name = ''
-    },
-    openDeleteConfiguration (configuration, index) {
-      this.showDeleteConfiguration = true
-      this.configurationToDelete = configuration
-      this.indexToDelete = index
-    },
-    closeDeleteConfiguration () {
-      this.showDeleteConfiguration = false
-      this.configurationToDelete = null
-      this.indexToDelete = null
-    },
-    addConfiguration () {
-      const configuration = {
-        name: this.name
-      }
 
+    handleAddConfiguration (configuration, clear) {
+      console.log(configuration)
       this.doPost({
         http: this.$http,
         whatToPost: 'createConfiguration',
         body: configuration,
         callback: (item) => {
+          this.addConfigurationOpen = false
           this.doPush({ whereToPush: 'configurations', item })
-          this.closeAddConfiguration()
+          clear()
         }
       })
     },
+
     removeConfiguration (configuration, index) {
       if (configuration) {
         this.doDelete({
@@ -158,10 +141,16 @@ export default {
           params: [configuration._id],
           callback: () => {
             this.doSplice({ whereToSplice: 'configurations', start: index, deleteCount: 1 })
-            this.closeDeleteConfiguration()
+            this.showDeleteConfiguration = false
           }
         })
       }
+    },
+
+    openDeleteConfiguration (configuration, index) {
+      this.showDeleteConfiguration = true
+      this.configurationToDelete = configuration
+      this.indexToDelete = index
     }
   }
 }

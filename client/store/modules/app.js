@@ -30,6 +30,7 @@ const state = {
     configurations: createLoadObject(),
     configuration: createLoadObject(),
     createConfiguration: createLoadObject(),
+    editConfiguration: createLoadObject(),
     deleteConfiguration: createLoadObject(),
     addDevice: createLoadObject(),
     removeDevice: createLoadObject(),

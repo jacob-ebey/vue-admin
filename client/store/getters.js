@@ -22,6 +22,7 @@ const deleteGateway = state => state.app.loading.deleteGateway
 const configurations = state => state.app.loading.configurations
 const configuration = state => state.app.loading.configuration
 const createConfiguration = state => state.app.loading.createConfiguration
+const editConfiguration = state => state.app.loading.editConfiguration
 const deleteConfiguration = state => state.app.loading.deleteConfiguration
 const addDevice = state => state.app.loading.addDevice
 const removeDevice = state => state.app.loading.removeDevice
@@ -59,6 +60,7 @@ export {
   configurations,
   configuration,
   createConfiguration,
+  editConfiguration,
   deleteConfiguration,
   addDevice,
   removeDevice,

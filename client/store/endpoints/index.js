@@ -19,6 +19,7 @@ export default {
   configurations: '/api/configurations',
   configuration: '/api/configurations/{0}',
   createConfiguration: '/api/configurations',
+  editConfiguration: '/api/configurations/{0}',
   deleteConfiguration: '/api/configurations/{0}',
   addDevice: '/api/configurations/{0}/devices',
   removeDevice: '/api/configurations/{0}/devices/{1}',
