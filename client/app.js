@@ -9,6 +9,7 @@ import router from './router'
 import store from './store'
 import * as filters from './filters'
 import { TOGGLE_SIDEBAR } from 'vuex-store/mutation-types'
+import endpoints from './store/endpoints'
 
 Vue.router = router
 Vue.use(VueAxios, axios)
@@ -27,8 +28,8 @@ Vue.use(VueAuth, {
   },
   http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
   router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
-  loginData: { url: '/api/auth/login', fetchUser: false },
-  fetchData: { url: '/api/users' },
+  loginData: { url: endpoints.login, fetchUser: false },
+  fetchData: { url: endpoints.userData },
   refreshData: { enabled: false }
 })
 
