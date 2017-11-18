@@ -31,6 +31,10 @@ const format = (string, ...params) => {
   return s
 }
 
+export const handleLogout = ({ commit }) => {
+  commit(types.LOGOUT)
+}
+
 // TODO: Add option to handle error globally
 export const doLoad = ({ commit, state }, { http, whatToLoad, params, mutator, forceLoad = false }) => {
   if (http && whatToLoad) {

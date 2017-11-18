@@ -12,33 +12,35 @@ const createLoadObject = () => ({
   error: null
 })
 
+const createLoading = () => ({
+  projects: createLoadObject(),
+  project: createLoadObject(),
+  createProject: createLoadObject(),
+  deleteProject: createLoadObject(),
+  addGatewayToProject: createLoadObject(),
+  removeGatewayFromProject: createLoadObject(),
+  linkConfiguration: createLoadObject(),
+
+  gateways: createLoadObject(),
+  gateway: createLoadObject(),
+  createGateway: createLoadObject(),
+  deleteGateway: createLoadObject(),
+
+  configurations: createLoadObject(),
+  configuration: createLoadObject(),
+  createConfiguration: createLoadObject(),
+  editConfiguration: createLoadObject(),
+  deleteConfiguration: createLoadObject(),
+  addDevice: createLoadObject(),
+  removeDevice: createLoadObject(),
+  editDevice: createLoadObject(),
+  addController: createLoadObject(),
+  removeController: createLoadObject(),
+  editController: createLoadObject()
+})
+
 const state = {
-  loading: {
-    projects: createLoadObject(),
-    project: createLoadObject(),
-    createProject: createLoadObject(),
-    deleteProject: createLoadObject(),
-    addGatewayToProject: createLoadObject(),
-    removeGatewayFromProject: createLoadObject(),
-    linkConfiguration: createLoadObject(),
-
-    gateways: createLoadObject(),
-    gateway: createLoadObject(),
-    createGateway: createLoadObject(),
-    deleteGateway: createLoadObject(),
-
-    configurations: createLoadObject(),
-    configuration: createLoadObject(),
-    createConfiguration: createLoadObject(),
-    editConfiguration: createLoadObject(),
-    deleteConfiguration: createLoadObject(),
-    addDevice: createLoadObject(),
-    removeDevice: createLoadObject(),
-    editDevice: createLoadObject(),
-    addController: createLoadObject(),
-    removeController: createLoadObject(),
-    editController: createLoadObject()
-  },
+  loading: createLoading(),
   device: {
     isMobile: false,
     isTablet: false
@@ -74,6 +76,10 @@ const mutations = {
     for (let name in effectItem) {
       state.effect[name] = effectItem[name]
     }
+  },
+
+  [types.LOGOUT] (state) {
+    state.loading = createLoading()
   },
 
   [types.SET_LOADING] (state, { whatToLoad, isLoading }) {

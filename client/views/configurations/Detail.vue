@@ -148,6 +148,7 @@
       title="Edit Summary"
       :visible="editConfigurationOpen"
       :initialValues="configToEdit"
+      :error="editConfiguration.error"
       @submit="handleEditConfiguration"
       @cancel="editConfigurationOpen = false"
     />
@@ -155,6 +156,7 @@
     <device-form
       :title="deviceToCopy ? 'Copy Device' : 'New Device'"
       :visible="addDeviceOpen"
+      :error="addDevice.error"
       :initialValues="deviceToCopy"
       @submit="handleAddDevice"
       @cancel="addDeviceOpen = false"
@@ -164,6 +166,7 @@
       title="Edit Device"
       :visible="!!deviceToEdit"
       :initialValues="deviceToEdit"
+      :error="editDevice.error"
       @submit="handleEditDevice"
       @cancel="deviceToEdit = null"
     />
@@ -195,6 +198,7 @@
       title="Edit Controller"
       :visible="!!controllerToEdit"
       :initialValues="controllerToEdit"
+      :error="editController.error"
       :devices="configuration.data.devices"
       @submit="handleEditController"
       @cancel="controllerToEdit = null"
@@ -258,7 +262,11 @@
     computed: {
       ...mapGetters({
         addController: 'addController',
+        addDevice: 'addDevice',
         configuration: 'configuration',
+        editConfiguration: 'editConfiguration',
+        editController: 'editController',
+        editDevice: 'editDevice',
         removeController: 'removeController',
         removeDevice: 'removeDevice'
       }),

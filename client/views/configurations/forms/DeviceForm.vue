@@ -7,6 +7,8 @@
       @cancel="handleCancel"
       okText="Save"
     >
+    <p v-if="error" class="is-danger">{{ error }}</p>
+
     <div class="field">
       <label class="label">Name</label>
       <p v-if="errors.name" class="help is-danger">{{ errors.name }}</p>
@@ -24,6 +26,7 @@
         <div class="select">
           <select v-model="value.type">
             <option value="gpio">GPIO</option>
+            <option value="analog">Analog</option>
           </select>
         </div>
       </div>
@@ -31,13 +34,16 @@
 
     <br />
 
-    <div class="field">
+    <div class="field" v-if="value.type">
       <label class="label">Mode</label>
       <p v-if="errors.mode" class="help is-danger">{{ errors.mode }}</p>
       <div class="control">
         <div class="select">
           <select v-model="value.mode">
-            <option value="discreteOut">Discrete Out</option>
+            <option v-if="value.type === 'gpio'" value="discreteOut">Discrete Out</option>
+            <option v-if="value.type === 'gpio'" value="discreteIn">Discrete In</option>
+            <option v-if="value.type === 'analog'" value="discreteOut">Analog Out</option>
+            <option v-if="value.type === 'analog'" value="discreteIn">Analog In</option>
           </select>
         </div>
       </div>
@@ -45,7 +51,7 @@
 
     <br />
 
-    <div class="field">
+    <div class="field" v-if="value.mode">
       <label class="label">Address</label>
       <p v-if="errors.address" class="help is-danger">{{ errors.address }}</p>
       <div class="control">
@@ -55,7 +61,7 @@
 
     <br />
 
-    <div class="field">
+    <div class="field" v-if="value.mode">
       <label class="label">Default Value</label>
       <div class="control">
         <input v-model="value.defaultValue" class="input" type="number" placeholder="0">
@@ -93,6 +99,10 @@ export default {
     title: {
       type: String,
       default: 'New Device'
+    },
+    error: {
+      type: String,
+      default: null
     },
     initialValues: {
       type: Object,

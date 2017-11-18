@@ -48,17 +48,19 @@ export default {
 
   methods: {
     ...mapActions([
-      'toggleSidebar'
+      'toggleSidebar',
+      'handleLogout'
     ]),
     logout () {
       this.$auth.logout({
-        redirect: 'Home',
+        redirect: '/',
         makeRequest: false
         // params: {},
         // success: function () {},
         // error: function () {},
         // etc...
       })
+      this.handleLogout()
     }
   }
 }

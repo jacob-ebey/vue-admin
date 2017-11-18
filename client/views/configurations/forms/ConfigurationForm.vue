@@ -7,6 +7,8 @@
       @cancel="handleCancel"
       okText="Save"
     >
+    <p v-if="error" class="is-danger">{{ error }}</p>
+
     <div class="field">
       <label class="label">Name</label>
       <p v-if="errors.name" class="help is-danger">{{ errors.name }}</p>
@@ -42,6 +44,10 @@ export default {
     title: {
       type: String,
       default: 'New Configuration'
+    },
+    error: {
+      type: String,
+      default: null
     },
     initialValues: {
       type: Object,

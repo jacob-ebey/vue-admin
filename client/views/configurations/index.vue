@@ -46,6 +46,7 @@
     <configuration-form
       :visible="addConfigurationOpen"
       :initialValues="configurationToCopy"
+      :error="createConfiguration.error"
       @submit="handleAddConfiguration"
       @cancel="addConfigurationOpen = false"
     />

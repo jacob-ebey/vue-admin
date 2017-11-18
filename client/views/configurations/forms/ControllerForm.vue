@@ -33,59 +33,64 @@
 
     <br />
 
-    <div class="field is-inline">
-      <div>
-        <label class="label">Inputs</label>
-        <button class="button is-small has-text-centered" @click="value.inputs.push(null)">
-          <i class="fa fa-plus center-icon"></i>
-        </button>
-        <div v-for="(input, index) in value.inputs" :key="index" class="field indent">
-          <label class="label">Device</label>
-          <div class="control">
-            <div class="select">
-              <select v-model="value.inputs[index]">
-                <option v-for="device in devices" :key="device._id" :value="device._id">{{device.name}}</option>
-              </select>
+    <template  v-if="value.type && value.type !== 'timer'">
+      <div class="field is-inline">
+        <div>
+          <label class="label">Inputs</label>
+          <button class="button is-small has-text-centered" @click="value.inputs.push(null)">
+            <i class="fa fa-plus center-icon"></i>
+          </button>
+          <div v-for="(input, index) in value.inputs" :key="index" class="field indent">
+            <label class="label">Device</label>
+            <div class="control">
+              <div class="select">
+                <select v-model="value.inputs[index]">
+                  <option v-for="device in devices" :key="device._id" :value="device._id">{{device.name}}</option>
+                </select>
+              </div>
+              <button
+                class="button is-danger is-small has-text-centered is-center"
+                @click="value.inputs.splice(index, 1)"
+              >
+                <i class="fa fa-trash-o center-icon"></i>
+              </button>
             </div>
-            <button
-              class="button is-danger is-small has-text-centered is-center"
-              @click="value.inputs.splice(index, 1)"
-            >
-              <i class="fa fa-trash-o center-icon"></i>
-            </button>
           </div>
         </div>
       </div>
-    </div>
+    
+      <br />
+    </template>
 
-    <br />
-
-    <div class="field is-inline">
-      <div>
-        <label class="label">Outputs</label>
-        <button class="button is-small has-text-centered" @click="value.outputs.push(null)">
-          <i class="fa fa-plus center-icon"></i>
-        </button>
-        <div v-for="(output, index) in value.outputs" :key="index" class="field indent">
-          <label class="label">Device {{index + 1}}</label>
-          <div class="control">
-            <div class="select">
-              <select v-model="value.outputs[index]">
-                <option v-for="device in devices" :key="device._id" :value="device._id">{{device.name}}</option>
-              </select>
+    <template v-if="value.type">
+      <div class="field is-inline">
+        <div>
+          <label class="label">Outputs</label>
+          <button class="button is-small has-text-centered" @click="value.outputs.push(null)">
+            <i class="fa fa-plus center-icon"></i>
+          </button>
+          <div v-for="(output, index) in value.outputs" :key="index" class="field indent">
+            <label class="label">Device {{index + 1}}</label>
+            <div class="control">
+              <div class="select">
+                <select v-model="value.outputs[index]">
+                  <option v-for="device in devices" :key="device._id" :value="device._id">{{device.name}}</option>
+                </select>
+              </div>
+              <button
+                class="button is-danger is-small has-text-centered is-center"
+                @click="value.output.splice(index, 1)"
+              >
+                <i class="fa fa-trash-o center-icon"></i>
+              </button>
             </div>
-            <button
-              class="button is-danger is-small has-text-centered is-center"
-              @click="value.output.splice(index, 1)"
-            >
-              <i class="fa fa-trash-o center-icon"></i>
-            </button>
           </div>
         </div>
       </div>
-    </div>
+      
+      <br />
+    </template>
 
-    <br />
 
     <template v-if="value.type === 'timer'">
       <div class="field is-inline">
@@ -147,9 +152,9 @@
           </button>
         </div>
       </div>
+      
+      <br />
     </template>
-
-    <br />
   </card-modal>
 </template>
 
