@@ -1,3 +1,5 @@
+// Dev endpoints
+
 export default {
   login: '/api/auth/login',
   userData: '/api/users',
@@ -14,6 +16,7 @@ export default {
   gateway: '/api/gateways/{0}',
   createGateway: '/api/gateways',
   deleteGateway: '/api/gateways/{0}',
+  unregisterGateway: '/api/gateways/unregister/{0}',
 
   configurations: '/api/configurations',
   configuration: '/api/configurations/{0}',

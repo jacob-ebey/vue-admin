@@ -25,6 +25,7 @@ const createLoading = () => ({
   gateway: createLoadObject(),
   createGateway: createLoadObject(),
   deleteGateway: createLoadObject(),
+  unregisterGateway: createLoadObject(),
 
   configurations: createLoadObject(),
   configuration: createLoadObject(),
@@ -41,6 +42,7 @@ const createLoading = () => ({
 
 const state = {
   loading: createLoading(),
+  token: null,
   device: {
     isMobile: false,
     isTablet: false
@@ -76,6 +78,10 @@ const mutations = {
     for (let name in effectItem) {
       state.effect[name] = effectItem[name]
     }
+  },
+
+  [types.SET_TOKEN] (state, token) {
+    state.token = token
   },
 
   [types.LOGOUT] (state) {

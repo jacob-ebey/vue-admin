@@ -18,6 +18,7 @@ const gateways = state => state.app.loading.gateways
 const gateway = state => state.app.loading.gateway
 const createGateway = state => state.app.loading.createGateway
 const deleteGateway = state => state.app.loading.deleteGateway
+const unregisterGateway = state => state.app.loading.unregisterGateway
 
 const configurations = state => state.app.loading.configurations
 const configuration = state => state.app.loading.configuration
@@ -56,6 +57,7 @@ export {
   gateway,
   createGateway,
   deleteGateway,
+  unregisterGateway,
 
   configurations,
   configuration,

@@ -188,3 +188,46 @@ export const doPush = ({ commit }, { whereToPush, subPath, item }) => {
 export const doSplice = ({ commit }, { whereToSplice, subPath, start, deleteCount, newItems }) => {
   commit(types.DO_SPLICE, { whereToSplice, subPath, start, deleteCount, newItems })
 }
+
+export const setToken = ({ commit }, token) => {
+  commit(types.SET_TOKEN, token)
+}
+
+// Configure websockets
+
+// TODO: Find a better place for this
+const isDev = process.env.NODE_ENV !== 'production'
+// eslint-disable-next-line no-undef
+const loc = isDev ? 'localhost:4040' : location.host
+
+// eslint-disable-next-line no-undef
+var ws = new WebSocket('ws://' + loc)
+let isWebsocketOpen = false
+const eventQueue = []
+ws.onopen = function () {
+  console.log('Successfully connect WebSocket')
+  isWebsocketOpen = true
+  eventQueue.forEach((event) => {
+    ws.send(JSON.stringify(event))
+  })
+}
+
+const eventHandlers = {}
+ws.onmessage = (message) => {
+  const data = JSON.parse(message.data)
+  if (eventHandlers[data.event]) {
+    eventHandlers[data.event](data.payload)
+  }
+}
+
+export const websocketSend = ({ commit, state }, newEvent) => {
+  if (isWebsocketOpen) {
+    ws.send(JSON.stringify(newEvent))
+  } else {
+    eventQueue.push(newEvent)
+  }
+}
+
+export const websocketEventHandler = ({ commit }, { event, callback }) => {
+  eventHandlers[event] = callback
+}

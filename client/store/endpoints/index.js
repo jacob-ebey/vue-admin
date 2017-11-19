@@ -12,7 +12,4 @@ if (!isDev) {
   }
 }
 
-console.log(`IsDev: ${isDev}`)
-console.log(`Endpoints: ${JSON.stringify(endpoints)}`)
-
 export default endpoints

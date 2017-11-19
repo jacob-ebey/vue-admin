@@ -10,6 +10,8 @@ import store from './store'
 import * as filters from './filters'
 import { TOGGLE_SIDEBAR } from 'vuex-store/mutation-types'
 import endpoints from './store/endpoints'
+// eslint-disable-next-line no-unused-vars
+import { websocketSend } from './store/actions'
 
 Vue.router = router
 Vue.use(VueAxios, axios)
@@ -23,6 +25,7 @@ Vue.use(VueAuth, {
     },
     response: function (res) {
       // Get Token from response body
+      websocketSend.token = res.data.token
       return res.data.token
     }
   },

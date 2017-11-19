@@ -19,12 +19,16 @@
                 <td>{{gateway.data._id}}</td>
               </tr>
               <tr v-if="gateway.data.registrationCode">
-                <th>IoT ID</th>
-                <td>{{gateway.data.iotId}}</td>
-              </tr>
-              <tr v-if="gateway.data.registrationCode">
                 <th>Registration Code</th>
                 <td>{{gateway.data.registrationCode}}</td>
+              </tr>
+              <tr v-if="!gateway.data.registrationCode">
+                <th>Registered</th>
+                <td>
+                  <button class="button is-danger is-small has-text-centered" @click="unregisterOpen = true">
+                    Unregister
+                  </button>
+                <td/>
               </tr>
               <tr>
                 <th>Owner</th>
@@ -55,10 +59,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>103221</td>
-                <td>11/10/2017 10:06 pm</td>
-                <td>{{JSON.stringify({ sensorId: 'rofl', data: 10.05 })}}</td>
+              <tr v-for="(event, index) in recievedEvents" :key="index">
+                <td>{{index}}</td>
+                <td>{{event.time}}</td>
+                <td>{{JSON.stringify(event.data)}}</td>
               </tr>
             </tbody>
           </table>
@@ -70,6 +74,19 @@
         </article>
       </div>
     </div>
+
+    <card-modal
+      :visible="unregisterOpen"
+      @ok="handleUnregister"
+      @close="unregisterOpen = false"
+      @cancel="unregisterOpen = false"
+      okText="Yes"
+      cancelText="No"
+      title="Unregister Gateway"
+    >
+      <div v-show="unregisterGateway.error" style="color:red; word-wrap:break-word;">{{ unregisterGateway.error }}</div>
+      <p>Do you really wish to unregister the physical device?</p>
+    </card-modal>
   </div>
 </template>
 
@@ -90,11 +107,16 @@
     },
   
     computed: mapGetters({
-      gateway: 'gateway'
+      gateway: 'gateway',
+      unregisterGateway: 'unregisterGateway'
     }),
   
     data () {
       return {
+        unregisterOpen: false,
+
+        recievedEvents: [],
+
         eventData: {
           labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
           series: [
@@ -110,12 +132,23 @@
   
     mounted () {
       this.loadGateway()
+      this.websocketEventHandler({ event: 'gatewayLog', callback: this.handleGatewayMessage })
+      this.websocketSend({ event: 'monitorGateway', token: this.$auth.token(), id: this.$route.params.id })
+    },
+
+    destroyed () {
+      this.websocketSend({ event: 'stopMonitorGateway', token: this.$auth.token() })
     },
   
     methods: {
       ...mapActions([
-        'doLoad'
+        'doLoad',
+        'doDelete',
+        'setProperty',
+        'websocketSend',
+        'websocketEventHandler'
       ]),
+
       loadGateway () {
         this.doLoad({
           http: this.$http,
@@ -123,6 +156,27 @@
           forceLoad: true,
           params: [this.$route.params.id]
         })
+      },
+
+      handleUnregister () {
+        this.doDelete({
+          http: this.$http,
+          whatToPost: 'unregisterGateway',
+          params: [this.$route.params.id],
+          callback: (registrationCode) => {
+            this.setProperty({
+              whereToSet: 'gateway',
+              callback: (gateway) => {
+                this.unregisterOpen = false
+                gateway.data.registrationCode = registrationCode
+              }
+            })
+          }
+        })
+      },
+
+      handleGatewayMessage (payload) {
+        this.recievedEvents.push(payload)
       }
     }
   }

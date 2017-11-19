@@ -16,6 +16,7 @@ export default {
   gateway: `${baseUrl}/api/gateways/{0}`,
   createGateway: `${baseUrl}/api/gateways`,
   deleteGateway: `${baseUrl}/api/gateways/{0}`,
+  unregisterGateway: `${baseUrl}/api/gateways/unregister/{0}`,
 
   configurations: `${baseUrl}/api/configurations`,
   configuration: `${baseUrl}/api/configurations/{0}`,
