@@ -197,8 +197,9 @@ export const setToken = ({ commit }, token) => {
 
 // TODO: Find a better place for this
 const isDev = process.env.NODE_ENV !== 'production'
+
 // eslint-disable-next-line no-undef
-const loc = isDev ? 'localhost:4040' : location.origin.replace(/^http[s]?/, 'ws')
+const loc = isDev ? 'localhost:4040' : location.origin.replace(/^http[s]?/, location.protocol !== 'https:' ? 'ws' : 'wss')
 
 // eslint-disable-next-line no-undef
 var ws = new WebSocket('ws://' + loc)
