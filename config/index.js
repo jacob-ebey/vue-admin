@@ -28,9 +28,6 @@ module.exports = {
       '/api': {
         target: 'http://localhost:4040',
         changeOrigin: true
-      },
-      '/socketbypass': {
-        target: 'http://localhost:4040'
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
