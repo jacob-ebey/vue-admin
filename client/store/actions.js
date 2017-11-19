@@ -201,7 +201,7 @@ const isDev = process.env.NODE_ENV !== 'production'
 const loc = isDev ? 'localhost:4040' : location.host
 
 // eslint-disable-next-line no-undef
-var ws = new WebSocket(location.protocol !== 'https:' ? 'ws://' : 'wss://' + loc)
+var ws = new WebSocket(location.protocol !== 'https:' ? 'ws://' + loc : 'wss://' + loc)
 let isWebsocketOpen = false
 const eventQueue = []
 ws.onopen = function () {
