@@ -16,6 +16,7 @@ const linkConfiguration = state => state.app.loading.linkConfiguration
 
 const gateways = state => state.app.loading.gateways
 const gateway = state => state.app.loading.gateway
+const gatewayLogs = state => state.app.loading.gatewayLogs
 const createGateway = state => state.app.loading.createGateway
 const deleteGateway = state => state.app.loading.deleteGateway
 const unregisterGateway = state => state.app.loading.unregisterGateway
@@ -55,6 +56,7 @@ export {
 
   gateways,
   gateway,
+  gatewayLogs,
   createGateway,
   deleteGateway,
   unregisterGateway,

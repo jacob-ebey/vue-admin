@@ -46,31 +46,34 @@
         </article>
       </div>
     </div>
-    <div class="tile is-ancestor">
+    <div v-if="gatewayLogs.data" class="tile is-ancestor">
       <div class="tile is-parent">
         <article class="tile is-child box">
           <h4 class="title">Logs</h4>
           <table class="table is-fullwidth is-stripped is-narrow">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Time</th>
                 <th>Data</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(event, index) in recievedEvents" :key="index">
-                <td>{{index}}</td>
-                <td>{{event.time}}</td>
-                <td>{{JSON.stringify(event.data)}}</td>
+              <tr v-for="(event, index) in [...gatewayLogs.data].splice(0, logCount)" :key="index">
+                <template v-if="event.message && event.message.payload">
+                  <td>{{event.message.payload.time}}</td>
+                  <td>{{JSON.stringify(event.message.payload.data)}}</td>
+                </template>
               </tr>
             </tbody>
           </table>
-          <tooltip label="See all logs" placement="right">
-            <button class="button has-text-centered">
-                <i class="fa fa-chevron-down center-icon"></i>
-              </button>
+          <tooltip label="Show more" placement="right">
+            <button class="button is-small has-text-centered" @click="logCount += 10">
+              <i class="fa fa-chevron-down center-icon"></i>
+            </button>
           </tooltip>
+          <span>
+            Showing {{gatewayLogs.data.length < logCount ? gatewayLogs.data.length : logCount}} of {{gatewayLogs.data.length}} (currenly only supports the last 100)
+          </span>
         </article>
       </div>
     </div>
@@ -108,14 +111,14 @@
   
     computed: mapGetters({
       gateway: 'gateway',
+      gatewayLogs: 'gatewayLogs',
       unregisterGateway: 'unregisterGateway'
     }),
   
     data () {
       return {
         unregisterOpen: false,
-
-        recievedEvents: [],
+        logCount: 10,
 
         eventData: {
           labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
@@ -132,8 +135,7 @@
   
     mounted () {
       this.loadGateway()
-      this.websocketEventHandler({ event: 'gatewayLog', callback: this.handleGatewayMessage })
-      this.websocketSend({ event: 'monitorGateway', token: this.$auth.token(), id: this.$route.params.id })
+      this.loadGatewayLogs()
     },
 
     destroyed () {
@@ -145,6 +147,7 @@
         'doLoad',
         'doDelete',
         'setProperty',
+        'doPush',
         'websocketSend',
         'websocketEventHandler'
       ]),
@@ -155,6 +158,19 @@
           whatToLoad: 'gateway',
           forceLoad: true,
           params: [this.$route.params.id]
+        })
+      },
+
+      loadGatewayLogs () {
+        this.doLoad({
+          http: this.$http,
+          whatToLoad: 'gatewayLogs',
+          forceLoad: true,
+          params: [this.$route.params.id],
+          callback: () => {
+            this.websocketEventHandler({ event: 'gatewayLog', callback: this.handleGatewayMessage })
+            this.websocketSend({ event: 'monitorGateway', token: this.$auth.token(), id: this.$route.params.id })
+          }
         })
       },
 
@@ -176,7 +192,15 @@
       },
 
       handleGatewayMessage (payload) {
-        this.recievedEvents.push(payload)
+        this.doPush({
+          whereToPush: 'gatewayLogs',
+          beginning: true,
+          item: {
+            message: {
+              payload
+            }
+          }
+        })
       }
     }
   }

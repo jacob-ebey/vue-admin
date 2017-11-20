@@ -14,6 +14,7 @@ export default {
 
   gateways: '/api/gateways',
   gateway: '/api/gateways/{0}',
+  gatewayLogs: '/api/gateways/{0}/logs',
   createGateway: '/api/gateways',
   deleteGateway: '/api/gateways/{0}',
   unregisterGateway: '/api/gateways/unregister/{0}',

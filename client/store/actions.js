@@ -36,7 +36,7 @@ export const handleLogout = ({ commit }) => {
 }
 
 // TODO: Add option to handle error globally
-export const doLoad = ({ commit, state }, { http, whatToLoad, params, mutator, forceLoad = false }) => {
+export const doLoad = ({ commit, state }, { http, whatToLoad, params, mutator, callback, forceLoad = false }) => {
   if (http && whatToLoad) {
     if (!forceLoad && state.app.loading[whatToLoad].data) {
       return
@@ -55,6 +55,10 @@ export const doLoad = ({ commit, state }, { http, whatToLoad, params, mutator, f
         return parsed
       }]
     }).then((response) => {
+      if (callback) {
+        callback(response.data)
+      }
+      console.log(response.data)
       commit(types.SET_LOADING_DATA, { whatToLoad, data: response.data })
       commit(types.SET_LOADING_ERROR, { whatToLoad, error: null })
     }).catch((error) => {
@@ -181,8 +185,8 @@ export const setProperty = ({ commit }, { whereToSet, callback }) => {
   commit(types.SET_PROPERTY, { whereToSet, callback })
 }
 
-export const doPush = ({ commit }, { whereToPush, subPath, item }) => {
-  commit(types.DO_PUSH, { whereToPush, subPath, item })
+export const doPush = ({ commit }, { whereToPush, subPath, item, beginning }) => {
+  commit(types.DO_PUSH, { whereToPush, subPath, item, beginning })
 }
 
 export const doSplice = ({ commit }, { whereToSplice, subPath, start, deleteCount, newItems }) => {

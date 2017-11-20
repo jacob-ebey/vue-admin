@@ -23,6 +23,7 @@ const createLoading = () => ({
 
   gateways: createLoadObject(),
   gateway: createLoadObject(),
+  gatewayLogs: createLoadObject(),
   createGateway: createLoadObject(),
   deleteGateway: createLoadObject(),
   unregisterGateway: createLoadObject(),
@@ -105,7 +106,15 @@ const mutations = {
     callback(obj)
   },
 
-  [types.DO_PUSH] (state, { whereToPush, subPath, item }) {
+  [types.DO_PUSH] (state, { whereToPush, subPath, item, beginning = false }) {
+    if (beginning) {
+      state.loading[whereToPush].data = [
+        item,
+        ...state.loading[whereToPush].data
+      ]
+      return
+    }
+
     let obj = state.loading[whereToPush].data
     if (subPath) {
       obj = getProperty(obj, subPath)
