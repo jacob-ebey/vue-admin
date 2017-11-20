@@ -58,7 +58,6 @@ export const doLoad = ({ commit, state }, { http, whatToLoad, params, mutator, c
       if (callback) {
         callback(response.data)
       }
-      console.log(response.data)
       commit(types.SET_LOADING_DATA, { whatToLoad, data: response.data })
       commit(types.SET_LOADING_ERROR, { whatToLoad, error: null })
     }).catch((error) => {
